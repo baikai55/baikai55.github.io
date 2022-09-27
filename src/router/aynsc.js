@@ -1,31 +1,31 @@
 
 const dept = {
-    path: '/dept',
+    path: '/system/dept',
     component: () => import('@/views/system/dept'),
 }
 const user = {
-    path: '/user',
+    path: '/system/user',
     component: () => import('@/views/system/user'),
 }
 const permission = {
-    path: '/permission',
+    path: '/system/permission',
     component: () => import('@/views/system/permission'),
 }
 const roles = {
-    path: '/roles',
+    path: '/system/roles',
     component: () => import('@/views/system/roles'),
 }
 const white = {
-    path: '/white',
+    path: '/system/white',
     component: () => import('@/views/system/white'),
 }
 const asyncRouetr =
 {
-    dept,
-    user,
-    permission,
-    roles,
-    white,
+    '/system/dept': dept,
+    '/system/user': user,
+    '/system/permission': permission,
+    '/system/roles': roles,
+    '/system/white': white,
 }
 // {
 //     path: '/index',

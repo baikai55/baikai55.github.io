@@ -1,7 +1,7 @@
 <template>
     <div id="login">
         <div class="login">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
                 <el-form-item label="账户：" prop="username">
                     <el-input v-model="ruleForm.username"></el-input>
                 </el-form-item>
@@ -70,8 +70,7 @@ export default {
                             console.log(res, 'role');
                             store.commit('set_userRole', res);
                             initAsyncRouter();
-                            router.push({ path: '/' });
-                            location.reload();
+                            this.$router.push({ path: res[0].children[0].path });
                         })
                     });
                 } else {
@@ -87,11 +86,24 @@ export default {
 #login {
     width: 100vw;
     height: 100vh;
+    position: relative;
 
     .login {
         width: 500px;
-        height: 500px;
-        margin: 0 auto;
+        height: 400px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-content: space-between;
+        flex-wrap: nowrap;
+        justify-content: space-around;
+        align-items: center;
 
         :deep .el-form-item.code {
             .el-form-item__content {

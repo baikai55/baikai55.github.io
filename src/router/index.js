@@ -6,6 +6,7 @@ import asyncRouetr from './aynsc'
 import store from '@/store'
 Vue.use(VueRouter)
 
+const NotFound = { path: '*', component: () => import('@/views/404') }
 const routes = [
   {
     path: '/login',
@@ -15,12 +16,7 @@ const routes = [
   {
     path: '/',
     component: Layout,
-    children: [
-      {
-        path: '',
-        component: () => import('@/views/index')
-      },
-    ]
+    children: []
   },
 ]
 
@@ -48,13 +44,12 @@ export function initAsyncRouter() {
   const currentRoutes = router.options.routes
   const rightList = store.state.userRole
   rightList.forEach(item => {
-    if (item.path) {
-      const temp = asyncRouetr[item.path]
-      // 路由规则中添加元数据meta
-      if (temp) {
-        currentRoutes[1].children.push(temp)
-      }
-    }
+    // if (item.path) {
+    //   const temp = asyncRouetr[item.path]
+    //   if (temp) {
+    //     currentRoutes[1].children.push(temp)
+    //   }
+    // }
 
     item.children.forEach(item => {
       // item 二级权限
@@ -63,10 +58,10 @@ export function initAsyncRouter() {
         currentRoutes[1].children.push(temp)
       }
     })
+    currentRoutes[1].children.push(NotFound)
   })
-  currentRoutes[1].children.push({ path: '*', component: () => import('@/views/404') })
   console.log(currentRoutes, 'currentRoutes');
   router.addRoute(...currentRoutes);
-  console.log(router);
+  console.log(router, routes, 'router');
 }
 export default router

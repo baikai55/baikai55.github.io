@@ -40,8 +40,7 @@ const roles = {
                     id: 11,
                     authName: '机构管理',
                     icon: 'el-icon-s-grid',
-                    path: 'dept',
-                    rights: ['view', 'edit', 'add', 'delete']
+                    path: '/system/dept',
                 },]
         },
         {
@@ -76,50 +75,31 @@ const roles = {
                     id: 11,
                     authName: '机构管理',
                     icon: 'el-icon-s-grid',
-                    path: 'dept',
-                    rights: ['view', 'edit', 'add', 'delete']
+                    path: '/system/dept',
                 }, {
                     id: 113,
                     authName: '⽤户管理',
                     icon: 'el-icon-s-grid',
-                    path: 'user',
-                    rights: ['view', 'edit', 'add', 'delete']
+                    path: '/system/user',
                 }, {
                     id: 112,
                     authName: '权限管理',
                     icon: 'el-icon-s-grid',
-                    path: 'permission',
-                    rights: ['view', 'edit', 'add', 'delete']
+                    path: '/system/permission',
                 }, {
                     id: 111,
                     authName: '⻆⾊管理',
                     icon: 'el-icon-s-grid',
-                    path: 'roles',
-                    rights: ['view', 'edit', 'add', 'delete']
+                    path: '/system/roles',
                 },
                 {
                     id: 12,
                     authName: '⽩名单管理',
                     icon: 'el-icon-s-marketing',
-                    path: 'white',
-                    rights: ['view', 'edit', 'add', 'delete']
+                    path: '/system/white',
                 }
             ]
         },
-        {
-            id: 2,
-            authName: '用户权限',
-            icon: 'el-icon-set-up',
-            children: [
-                {
-                    id: 21,
-                    authName: '权限页面',
-                    icon: 'el-icon-s-custom',
-                    path: 'users',
-                    rights: ['view', 'edit', 'add', 'delete']
-                }
-            ]
-        }
     ]
 }
 

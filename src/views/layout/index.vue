@@ -46,5 +46,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-
+main.el-main {
+  background-color: #fff;
+}
 </style>
