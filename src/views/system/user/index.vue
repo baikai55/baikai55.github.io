@@ -38,10 +38,20 @@
                 </div>
             </div>
         </div>
+        <div class="table">
+            <Table :table="table" ref="table" @handButton="handButton"></Table>
+        </div>
+        <div class="pagination">
+            <Pagination background @handleSizeChange="handleSizeChange" @handleCurrentChange="handleCurrentChange"
+                :total="pagination.total" :page="pagination.page" :pageSizes="pagination.pageSizes">
+            </Pagination>
+        </div>
     </div>
 </template>
 
 <script>
+import { getTableData } from '@/api/table';
+
 export default {
     data() {
         return {
@@ -50,8 +60,54 @@ export default {
                 userName: '',
                 telephone: '',
             },
+            pagination: {
+                total: 0,
+                page: 1,
+                pageSizes: 10,
+            },
+            table: {
+                tableData: [],
+                header: [
+                    { prop: "date", label: "员工工号", width: "120px" },
+                    { prop: "name", label: "员工姓名", width: "110px" },
+                    { prop: "address", label: "所属机构", minWidth: "120px" },
+                    {
+                        prop: "", label: "操作", width: "120px", control: true,
+                        tableOption: [
+                            { type: "text", label: "修改", size: "mini", methods: "update", },
+                            { type: "text", label: "删除", size: "mini", methods: "delete", },
+                        ]
+                    }
+                ]
+            }
         };
     },
+    created() {
+        this.tableData()
+    },
+    methods: {
+        //表格操作传参
+        handButton(val) {
+            console.log(val, 'handButton');
+        },
+        // 分页器一页显示多少条
+        handleSizeChange(val) {
+            console.log(val, 'handleSizeChange');
+            this.pagination.pageSizes = val.pageSize;
+        },
+        // 分页器当前页
+        handleCurrentChange(val) {
+            console.log(val, 'handleCurrentChange');
+            this.pagination.page = val.currentPage;
+        },
+        // 获取表格数据
+        tableData() {
+            getTableData().then(res => {
+                this.table.tableData = res
+                this.pagination.total = res.length
+            })
+        }
+    }
 }
 </script>
 

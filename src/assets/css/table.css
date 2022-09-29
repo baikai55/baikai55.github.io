@@ -1,0 +1,56 @@
+.table-control-main .m_text,
+.search-control-header,
+.m_text {
+  background-color: #f5f5f5;
+}
+.table-control-main .m_text p,
+.search-control-header p,
+.m_text p {
+  margin-left: 20px;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 0;
+  text-align-last: left;
+}
+.table-control-search {
+  background-color: #fff;
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-bottom: 10px;
+}
+.table-control-search .el-form {
+  flex-wrap: wrap;
+  align-items: center;
+}
+.table-control-search .el-form .search-left {
+  display: flex;
+  flex-wrap: wrap;
+}
+.table-control-search .el-form-item {
+  margin-top: 7px;
+  margin-bottom: 8px;
+}
+.table-control-search .el-form .el-input input.el-input__inner {
+  height: 28px;
+  width: 140px;
+}
+.table-control-search .el-form .el-form-item.select .el-input input.el-input__inner {
+  width: 280px;
+  font-size: 14px;
+  font-weight: blod;
+  color: #000;
+}
+.el-table .el-table__cell,
+.table-content .el-button {
+  padding: 6px;
+}
+.el-table .el-table__header th {
+  padding: 15px;
+  color: #000;
+  font-weight: 700;
+}
+.table-control-main .block {
+  text-align: center;
+  padding-top: 5px;
+  background-color: #fff;
+}

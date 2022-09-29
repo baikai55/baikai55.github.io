@@ -1,67 +1,76 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import login from '@/views/login'
-import Layout from '@/views/layout'
-import asyncRouetr from './aynsc'
-import store from '@/store'
-Vue.use(VueRouter)
+import Vue from "vue";
+import VueRouter from "vue-router";
+import login from "@/views/login";
+import Layout from "@/views/layout";
+import asyncRouetr from "./aynsc";
+import store from "@/store";
+import nprogress from "nprogress";
+Vue.use(VueRouter);
 
-const NotFound = { path: '*', component: () => import('@/views/404') }
 const routes = [
   {
-    path: '/login',
-    name: 'login',
-    component: login
+    path: "/login",
+    name: "login",
+    component: login,
   },
   {
-    path: '/',
+    path: "/",
     component: Layout,
-    children: []
+    children: [
+      {
+        path: "",
+        component: () => import("@/views/index"),
+      },
+    ],
   },
-]
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
 router.beforeEach((to, from, next) => {
-  if (to.path == '/login') {
-    next()
+  nprogress.start();
+  if (to.path == "/login") {
+    next();
   } else {
-    let token = sessionStorage.getItem('token')
+    let token = sessionStorage.getItem("token");
     if (token) {
-      next()
+      next();
     } else {
-      next('/login')
+      next("/login");
     }
   }
 });
-
+router.afterEach(() => {
+  //路由跳转结束之后 进度条结束
+  nprogress.done();
+});
 export function initAsyncRouter() {
   // 根据二级权限 对路由规则进行动态的添加
-  const currentRoutes = router.options.routes
-  const rightList = store.state.userRole
-  rightList.forEach(item => {
-    // if (item.path) {
-    //   const temp = asyncRouetr[item.path]
-    //   if (temp) {
-    //     currentRoutes[1].children.push(temp)
-    //   }
-    // }
-
-    item.children.forEach(item => {
-      // item 二级权限
-      const temp = asyncRouetr[item.path]
+  const currentRoutes = router.options.routes;
+  const rightList = store.state.userRole;
+  rightList.forEach((item) => {
+    if (item.path) {
+      const temp = asyncRouetr[item.path];
       if (temp) {
-        currentRoutes[1].children.push(temp)
+        currentRoutes[1].children.push(temp);
       }
-    })
-    currentRoutes[1].children.push(NotFound)
-  })
-  console.log(currentRoutes, 'currentRoutes');
+    }
+    if (item.children && item.children.length > 0) {
+      item.children.forEach((item) => {
+        // item 二级权限
+        const temp = asyncRouetr[item.path];
+        if (temp) {
+          currentRoutes[1].children.push(temp);
+        }
+      });
+    }
+  });
+  console.log(currentRoutes, "currentRoutes");
   router.addRoute(...currentRoutes);
-  console.log(router, routes, 'router');
+  console.log(router, routes, "router");
 }
-export default router
+export default router;

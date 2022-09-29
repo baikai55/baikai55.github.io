@@ -1,0 +1,180 @@
+[
+    {
+        "id": 1,
+        "path": "/system",
+        "title": "系统管理",
+        "icon": "el-icon-connection",
+        "children": [
+            {
+                "id": 11,
+                "title": "机构管理",
+                "icon": "el-icon-s-grid",
+                "path": "/system/dept"
+            },
+            {
+                "id": 113,
+                "title": "⽤户管理",
+                "icon": "el-icon-s-grid",
+                "path": "/system/user"
+            },
+            {
+                "id": 112,
+                "title": "权限管理",
+                "icon": "el-icon-s-grid",
+                "path": "/system/permission"
+            },
+            {
+                "id": 111,
+                "title": "⻆⾊管理",
+                "icon": "el-icon-s-grid",
+                "path": "/system/roles"
+            },
+            {
+                "id": 12,
+                "title": "⽩名单管理",
+                "icon": "el-icon-s-marketing",
+                "path": "/system/white"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "title": "考核模型参数管理",
+        "icon": "el-icon-connection",
+        "path": "/assess",
+        "children": [
+            {
+                "id": 212,
+                "title": "参数管理",
+                "icon": "el-icon-s-marketing",
+                "path": "/assess/params"
+            },
+            {
+                "id": 2121,
+                "title": "考核类型管理",
+                "icon": "el-icon-s-marketing",
+                "path": "/assess/type"
+            },
+            {
+                "id": 2112,
+                "title": "考核分值管理",
+                "icon": "el-icon-s-marketing",
+                "path": "/assess/score"
+            }
+        ]
+    },
+    {
+        "id": 33,
+        "title": "社区⺠警管理",
+        "icon": "el-icon-connection",
+        "path": "/police",
+        "children": [
+            {
+                "id": 312,
+                "title": "派出所管理",
+                "icon": "el-icon-s-marketing",
+                "path": "/police/dept"
+            },
+            {
+                "id": 3121,
+                "title": "派出所考评管理",
+                "icon": "el-icon-s-marketing",
+                "path": "/police/score"
+            },
+            {
+                "id": 3112,
+                "title": "⺠警信息管理",
+                "icon": "el-icon-s-marketing",
+                "path": "/police/msg"
+            }
+        ]
+    },
+    {
+        "id": 43,
+        "title": "考核管理",
+        "icon": "el-icon-connection",
+        "path": "/assessment",
+        "children": [
+            {
+                "id": 412,
+                "title": "考核任务管理",
+                "icon": "el-icon-s-marketing",
+                "path": "/assessment/task"
+            },
+            {
+                "id": 4121,
+                "title": "考核任务发布",
+                "icon": "el-icon-s-marketing",
+                "path": "/assessment/update"
+            },
+            {
+                "id": 4112,
+                "title": "考核任务完成情况",
+                "icon": "el-icon-s-marketing",
+                "path": "/assessment/details"
+            },
+            {
+                "id": 4122,
+                "title": "考核分值项录⼊",
+                "icon": "el-icon-s-marketing",
+                "path": "/assessment/score"
+            }
+        ]
+    },
+    {
+        "id": 53,
+        "title": "公告管理",
+        "icon": "el-icon-connection",
+        "path": "/notice",
+        "children": [
+            {
+                "id": 512,
+                "title": "公告管理",
+                "icon": "el-icon-s-marketing",
+                "path": "/notice/control"
+            },
+            {
+                "id": 5121,
+                "title": "公告发布",
+                "icon": "el-icon-s-marketing",
+                "path": "/notice/update"
+            }
+        ]
+    },
+    {
+        "id": 63,
+        "title": "排名统计",
+        "icon": "el-icon-connection",
+        "path": "/ranking",
+        "children": [
+            {
+                "id": 6112,
+                "title": "数据详细查询",
+                "icon": "el-icon-s-marketing",
+                "path": "/ranking/details"
+            },
+            {
+                "id": 612,
+                "title": "数据管理",
+                "icon": "el-icon-s-marketing",
+                "path": "/ranking/control"
+            },
+            {
+                "id": 6121,
+                "title": "派出所均分排名",
+                "icon": "el-icon-s-marketing",
+                "path": "/ranking/meanscore"
+            },
+            {
+                "id": 6113,
+                "title": "社区⺠警得分排名",
+                "icon": "el-icon-s-marketing",
+                "path": "/ranking/scorerank"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "path": "*"
+    }
+]

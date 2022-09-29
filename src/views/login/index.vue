@@ -18,8 +18,8 @@
                         </div>
                     </template>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
+                <el-form-item class="loginbtn">
+                    <el-button :loading="loading" type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -39,6 +39,7 @@ export default {
     },
     data() {
         return {
+            loading: false,
             ruleForm: {
                 username: 'admin',
                 password: '123456',
@@ -62,11 +63,13 @@ export default {
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
+                    this.loading = true;
                     login(this.ruleForm).then(res => {
                         console.log(res);
                         store.commit('set_token', res.token);
                         store.commit('set_userName', res.username);
                         getRoles(res.role).then(res => {
+                            this.loading = false;
                             console.log(res, 'role');
                             store.commit('set_userRole', res);
                             initAsyncRouter();
@@ -88,7 +91,7 @@ export default {
     height: 100vh;
     position: relative;
 
-    .login {
+    :deep .login {
         width: 500px;
         height: 400px;
         position: absolute;
@@ -105,7 +108,13 @@ export default {
         justify-content: space-around;
         align-items: center;
 
-        :deep .el-form-item.code {
+        .el-form-item.loginbtn {
+            button.el-button.el-button--primary {
+                width: 100%;
+            }
+        }
+
+        .el-form-item.code {
             .el-form-item__content {
                 display: flex;
 

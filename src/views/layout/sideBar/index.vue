@@ -1,25 +1,23 @@
 <template>
   <!-- 左侧导航开始 -->
-  <el-aside width="200px" class="a-side">
+  <el-aside width="210px" class="a-side">
     <el-menu class="el-menu-vertical-demo" background-color="transparent" :router="true" :default-active="key">
-      <el-menu-item index="/">
-        <i class="el-icon-menu"></i>
-        <span slot="title">首页</span>
-      </el-menu-item>
-      <el-submenu :index="item.id + ''" v-for="item in menuData" :key="item.id">
-        <template slot="title">
-          <i :class="item.icon"></i>
-          <span>{{item.authName}}</span>
-        </template>
-        <el-menu-item :index="subItem.path" v-for="subItem in item.children" :key="subItem.id">
+      <template v-for="item in menuData">
+        <el-submenu v-if="item.path !=='*'" :key="item.id" :index="item.path">
           <template slot="title">
-            <!-- 图标 -->
-            <i style="padding-right: 10px" :class="subItem.icon"></i>
-            <!-- 文本 -->
-            <span>{{ subItem.authName }}</span>
+            <i :class="item.icon"></i>
+            <span>{{item.title}}</span>
           </template>
-        </el-menu-item>
-      </el-submenu>
+          <el-menu-item :index="subItem.path" v-for="subItem in item.children" :key="subItem.id">
+            <template slot="title">
+              <!-- 图标 -->
+              <i style="padding-right: 10px" :class="subItem.icon"></i>
+              <!-- 文本 -->
+              <span>{{ subItem.title }}</span>
+            </template>
+          </el-menu-item>
+        </el-submenu>
+      </template>
     </el-menu>
   </el-aside>
   <!-- 左侧导航结束 -->
@@ -48,12 +46,19 @@ export default {
   },
 };
 </script>
-<style>
+
+<style scoped lang="scss">
 aside.el-aside.a-side {
   height: calc(100vh - 60px);
   background-color: #fff;
-}
-</style>
-<style scoped lang="scss">
+  border-right: solid 1px #e6e6e6;
 
+  ul.el-menu-vertical-demo.el-menu {
+    border: none;
+  }
+}
+
+aside.el-aside.a-side::-webkit-scrollbar {
+  width: 0;
+}
 </style>

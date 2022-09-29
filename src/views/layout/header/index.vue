@@ -29,8 +29,10 @@ export default {
     },
     methods: {
         logout() {
+            localStorage.clear()
             sessionStorage.clear()
             router.push({ path: '/login' })
+            location.reload()
         }
     },
 }
