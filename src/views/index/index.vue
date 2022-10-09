@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { getRoles } from '@/api/user';
+import { routerBase } from '@/api/login';
 import router from '@/router';
 export default {
     created() {
@@ -11,8 +11,8 @@ export default {
     },
     methods: {
         redirect() {
-            getRoles('admin').then(res => {
-                router.push({ path: res[0].children[0].path })
+            routerBase().then(res => {
+                router.push({ path: res.result[0].children[0].path });
             })
         }
     }

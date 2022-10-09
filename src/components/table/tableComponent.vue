@@ -5,7 +5,7 @@
         (currentPage - 1) * pageSize,
         currentPage * pageSize
       )
-    " empty-text="暂无数据~" border ref="table" :height="tableHeightComputed">
+    " empty-text="暂无数据~" border ref="table" :height="tableHeightComputed" @select="select" @select-all="selectAll">
       <template v-for="(item, index) in table.header">
         <template v-if="item.selection">
           <el-table-column type="selection" :width="item.width" :min-width="item.minWidth" :key="index" align="center">
@@ -151,6 +151,12 @@ export default {
     });
   },
   methods: {
+    select(current, row) {
+      this.$emit("select", { current, row });
+    },
+    selectAll(current) {
+      this.$emit("selectAll", current);
+    },
     resize() {
       let itemheight = document.documentElement.clientHeight;
       let boundingheight = this.$refs.table.$el.getBoundingClientRect().top;

@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    userName: sessionStorage.getItem('userName') || '',
+    userName: sessionStorage.getItem('userName') || '123456464',
     userRole: JSON.parse(sessionStorage.getItem('userRole') || '[]'),
     token: sessionStorage.getItem('token') || "",
   },

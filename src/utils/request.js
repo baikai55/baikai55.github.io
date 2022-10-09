@@ -5,7 +5,8 @@ import nprogress from "nprogress";
 
 let request = axios.create({
   // baseURL: window.global_url.baseURL,
-  baseURL: "/",
+  baseURL: "http://192.168.50.225:18099/",
+  // baseURL: "/",
   timeout: 5000,
 });
 request.defaults.headers.post["Content-Type"] =
@@ -15,7 +16,7 @@ request.interceptors.request.use(
     const isToken = (config.headers || {}).isToken === false;
     if (!isToken) {
       config.headers["Authorization"] =
-        "Bearer " + localStorage.getItem("token"); // 让每个请求携带自定义token 请根据实际情况自行修改
+        "Bearer " + sessionStorage.getItem("token"); // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     // nprogress.start();
     if (config) {

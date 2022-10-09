@@ -1,33 +1,34 @@
 <template>
     <div id="login">
-        <div class="login">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
-                <el-form-item label="账户：" prop="username">
-                    <el-input v-model="ruleForm.username"></el-input>
-                </el-form-item>
-                <el-form-item label="密码：" prop="password">
-                    <el-input v-model="ruleForm.password"></el-input>
-                </el-form-item>
-                <el-form-item label="验证码：" prop="code" class="code">
-                    <template>
-                        <div class="left">
-                            <el-input v-model="ruleForm.code"></el-input>
-                        </div>
-                        <div class="right">
-                            <img src="@/assets/images/example.png" alt="">
-                        </div>
-                    </template>
-                </el-form-item>
-                <el-form-item class="loginbtn">
-                    <el-button :loading="loading" type="primary" @click="submitForm('ruleForm')">登录</el-button>
-                </el-form-item>
-            </el-form>
+        <div class="dunpai">
+            <div class="title">
+                <img src="@/assets/images/login/logo.png" alt="logo"><span>警长伙伴</span>
+            </div>
+            <div class="login">
+                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
+                    <el-form-item prop="username">
+                        <el-input v-model="ruleForm.username" prefix-icon="el-icon-login-user" placeholder="请输入账号">
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item prop="password">
+                        <el-input v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"
+                            prefix-icon="el-icon-login-password" placeholder="请输入密码"></el-input>
+                    </el-form-item>
+                    <el-form-item class="loginbtn">
+                        <span @click="submitForm('ruleForm')">登录</span>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-checkbox v-model="remember">记住密码</el-checkbox>
+                    </el-form-item>
+                </el-form>
+            </div>
         </div>
+
     </div>
 </template>
 <script>
 import router, { initAsyncRouter } from '@/router';
-import { login, getRoles } from '@/api/user'
+import { login, routerBase } from '@/api/login';
 import store from '@/store';
 export default {
     beforeRouteEnter(to, from, next) {
@@ -40,9 +41,10 @@ export default {
     data() {
         return {
             loading: false,
+            remember: false,
             ruleForm: {
-                username: 'admin',
-                password: '123456',
+                username: "root",
+                password: "123456",
                 code: '1',
             },
             rules: {
@@ -66,16 +68,16 @@ export default {
                     this.loading = true;
                     login(this.ruleForm).then(res => {
                         console.log(res);
-                        store.commit('set_token', res.token);
-                        store.commit('set_userName', res.username);
-                        getRoles(res.role).then(res => {
+                        store.commit('set_token', res.result.token);
+                        store.commit('set_userName', res.user);
+                        routerBase().then(res => {
                             this.loading = false;
-                            console.log(res, 'role');
-                            store.commit('set_userRole', res);
+                            console.log(res.result, 'role');
+                            store.commit('set_userRole', res.result);
                             initAsyncRouter();
-                            this.$router.push({ path: res[0].children[0].path });
+                            router.push({ path: res.result[0].children[0].path });
                         })
-                    });
+                    })
                 } else {
                     console.log('error submit!!');
                     return false;
@@ -90,50 +92,156 @@ export default {
     width: 100vw;
     height: 100vh;
     position: relative;
+    background: url("@/assets/images/login/bg.png") no-repeat;
+    background-size: 100% 100%;
 
-    :deep .login {
-        width: 500px;
-        height: 400px;
+
+    :deep .dunpai {
+        width: 5.5rem;
+        height: 5.8rem;
+        background: url("@/assets/images/login/dunpai.png") no-repeat;
+        background-size: 5.5rem 5.8rem;
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
         margin: auto;
-        background-color: #fff;
-        display: flex;
-        flex-direction: column;
-        align-content: space-between;
-        flex-wrap: nowrap;
-        justify-content: space-around;
-        align-items: center;
 
-        .el-form-item.loginbtn {
-            button.el-button.el-button--primary {
-                width: 100%;
+
+        .title {
+            position: absolute;
+            top: 17%;
+            left: 30%;
+            z-index: 33;
+            display: flex;
+            align-items: center;
+
+            img {
+                width: 0.45rem;
+                height: 0.45rem;
+            }
+
+            span {
+                margin-left: 10px;
+                font-size: 36px;
+                color: #fff;
             }
         }
 
-        .el-form-item.code {
-            .el-form-item__content {
-                display: flex;
+        .login {
+            background: url("@/assets/images/login/login.png") no-repeat;
+            background-size: 6.2rem 2.5rem;
+            width: 6.2rem;
+            height: 2.5rem;
+            position: absolute;
+            top: 50%;
+            margin-top: -1rem;
+            left: 50%;
+            margin-left: -3rem;
+            display: flex;
+            flex-direction: column;
+            align-content: space-between;
+            flex-wrap: nowrap;
+            justify-content: space-around;
+            align-items: flex-start;
 
-                .left {
-                    width: 60%;
+            /* 添加用户名密码小图标 */
+            .el-icon-login-user {
+                background: url(@/assets/images/login/user.png) center no-repeat;
+                background-size: contain;
+            }
+
+            .el-icon-login-user:before {
+                content: "\66ff";
+                font-size: 16px;
+                visibility: hidden;
+            }
+
+            .el-icon-login-password {
+                background: url(@/assets/images/login/pass.png) center no-repeat;
+                background-size: contain;
+            }
+
+            .el-icon-login-password:before {
+                content: "替";
+                font-size: 16px;
+                visibility: hidden;
+            }
+
+            .el-input__prefix {
+                left: 10px;
+            }
+
+            .el-input--prefix .el-input__inner {
+                padding-left: 40px;
+            }
+
+
+            .el-form-item.loginbtn {
+                position: absolute;
+                top: 41%;
+                right: 11%;
+
+                span {
+                    font-size: 40px;
+                    color: #0366CE;
+                    cursor: pointer;
                 }
+            }
 
-                .right {
-                    width: 40%;
+            .el-form-item.code {
+                .el-form-item__content {
+                    display: flex;
 
-                    img {
-                        box-sizing: border-box;
-                        width: 100%;
-                        height: 40px;
-                        padding-left: 15px;
+                    .left {
+                        width: 60%;
+                    }
+
+                    .right {
+                        width: 40%;
+
+                        img {
+                            box-sizing: border-box;
+                            width: 100%;
+                            height: 40px;
+                            padding-left: 15px;
+                        }
                     }
                 }
             }
         }
+
+        .el-checkbox {
+            span.el-checkbox__label {
+                color: #000;
+            }
+        }
+
+        .el-checkbox__input .el-checkbox__inner {
+            border-radius: 50%;
+        }
+
+        .el-checkbox__input.is-checked .el-checkbox__inner,
+        .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+            background-color: transparent !important;
+            border: 1px solid #fff !important;
+            border-radius: 50%;
+        }
+
+        .el-checkbox__inner:hover {
+            border-color: #fff;
+        }
+
+        .el-checkbox__input.is-checked+.el-checkbox__label {
+            color: #fff;
+        }
+
+        .el-checkbox__input.is-focus .el-checkbox__inner {
+            border-color: #fff !important;
+        }
+
+
     }
 }
 </style>

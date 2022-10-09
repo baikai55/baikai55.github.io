@@ -103,8 +103,9 @@ export default {
         // 获取表格数据
         tableData() {
             getTableData().then(res => {
-                this.table.tableData = res
-                this.pagination.total = res.length
+                console.log(res, 'res');
+                this.table.tableData = res.data
+                this.pagination.total = res.data.length
             })
         }
     }
