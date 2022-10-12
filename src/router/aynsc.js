@@ -4,11 +4,14 @@ const dept = {
   component: () => import("@/views/system/dept"),
   meta: { title: "机构管理", father: "系统管理" },
 };
+const menu = {
+  path: "/system/menuManagement",
+  component: () => import("@/views/system/menu"),
+};
 const user = {
   path: "/system/user",
   component: () => import("@/views/system/user"),
   meta: { title: "用户管理", father: "系统管理" },
-
 };
 const permission = {
   path: "/system/permission",
@@ -100,6 +103,7 @@ const asyncRouetr = {
   "/system/permission": permission,
   "/system/roles": roles,
   "/system/white": white,
+  "/system/menuManagement": menu,
   "*": NotFound,
   "/assess/params": params,
   "/assess/type": type,

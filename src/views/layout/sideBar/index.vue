@@ -5,13 +5,13 @@
       <template v-for="item in menuData">
         <el-submenu v-if="item.path !=='*'" :key="item.id" :index="item.path">
           <template slot="title">
-            <i :class="item.icon"></i>
+            <!-- <i :class="item.icon"></i> -->
             <span>{{item.title}}</span>
           </template>
           <el-menu-item :index="subItem.path" v-for="subItem in item.children" :key="subItem.id">
             <template slot="title">
               <!-- 图标 -->
-              <i style="padding-right: 10px" :class="subItem.icon"></i>
+              <!-- <i style="padding-right: 10px" :class="subItem.icon"></i> -->
               <!-- 文本 -->
               <span>{{ subItem.title }}</span>
             </template>

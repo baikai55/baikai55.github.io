@@ -1,32 +1,30 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    userName: sessionStorage.getItem('userName') || '123456464',
-    userRole: JSON.parse(sessionStorage.getItem('userRole') || '[]'),
-    token: sessionStorage.getItem('token') || "",
+    userName: localStorage.getItem("userName") || "123456464",
+    userRole: JSON.parse(localStorage.getItem("userRole") || "[]"),
+    token: localStorage.getItem("token") || "",
+    
   },
-  getters: {
-  },
+  getters: {},
   mutations: {
     set_token(state, token) {
-      state.token = token
-      sessionStorage.setItem('token', token)
+      state.token = token;
+      localStorage.setItem("token", token);
     },
     set_userName(state, userName) {
-      state.userName = userName
-      sessionStorage.setItem('userName', userName)
+      state.userName = userName;
+      localStorage.setItem("userName", userName);
     },
     set_userRole(state, userRole) {
-      state.userRole = userRole
-      sessionStorage.setItem('userRole', JSON.stringify(userRole))
+      state.userRole = userRole;
+      localStorage.setItem("userRole", JSON.stringify(userRole));
     },
   },
-  actions: {
-  },
-  modules: {
-  }
-})
+  actions: {},
+  modules: {},
+});

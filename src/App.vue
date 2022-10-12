@@ -16,4 +16,9 @@ export default {
 #app {
   background-color: #f5f5f5;
 }
+
+.inline {
+  display: inline-block;
+  margin-left: 10px;
+}
 </style>

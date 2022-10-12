@@ -3,7 +3,7 @@
     <el-pagination
       :background="background"
       :current-page.sync="currentPage"
-      :page-size.sync="pageSize"
+      :page-size.sync="pageSizes"
       layout="total, sizes, prev, pager, next, jumper"
       :page-sizes="[10, 20, 30, 40]"
       :total="total"
@@ -20,12 +20,12 @@ export default {
       default: () => {},
       type: Number,
     },
-    page: {
+    pageNum: {
       // 当前页
       type: Number,
       default: () => {},
     },
-    pageSizes: {
+    pageSize: {
       // 每页显示条数
       type: Number,
       default: 10,
@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      pageSize: 10,
+      pageSizes: 10,
     };
   },
   methods: {
@@ -52,7 +52,7 @@ export default {
     handleCurrentChange(val) {
       this.$emit("handleCurrentChange", {
         currentPage: val,
-        pageSize: this.pageSize,
+        pageSize: this.pageSizes,
       });
     },
   },

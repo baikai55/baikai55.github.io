@@ -1,10 +1,7 @@
 <template>
   <div class="table-content" ref="content">
     <el-table :data="
-      table.tableData.slice(
-        (currentPage - 1) * pageSize,
-        currentPage * pageSize
-      )
+      table.tableData
     " empty-text="暂无数据~" border ref="table" :height="tableHeightComputed" @select="select" @select-all="selectAll">
       <template v-for="(item, index) in table.header">
         <template v-if="item.selection">
@@ -59,10 +56,18 @@
             :width="item.width" :fixed="item.fixed" :key="item.prop" align="center">
             <!-- 右侧操作 -->
             <template slot-scope="scope">
-              <el-button v-for="(btn, ind) in item.tableOption" :key="ind" :type="btn.type" :size="btn.size"
-                @click="handButton(btn.methods, scope.row, scope.$index)">
-                {{ btn.label }}
-              </el-button>
+              <template v-for="(btn, ind) in item.tableOption">
+                <el-popconfirm :title="btn.title" v-if="btn.label=='删除'" :key="btn.label" @confirm="confirmDel"
+                  @cancel="cancelDel">
+                  <el-button slot="reference" :type="btn.type" :size="btn.size"
+                    @click="handButton(btn.methods, scope.row, scope.$index)">删除</el-button>
+                </el-popconfirm>
+                <el-button v-else :key="ind" :type="btn.type" :size="btn.size"
+                  @click="handButton(btn.methods, scope.row, scope.$index)">
+                  {{ btn.label }}
+                </el-button>
+              </template>
+
             </template>
           </el-table-column>
         </template>
@@ -151,6 +156,12 @@ export default {
     });
   },
   methods: {
+    confirmDel() {
+      this.$emit("confirmDel");
+    },
+    cancelDel() {
+      this.$emit("cancelDel");
+    },
     select(current, row) {
       this.$emit("select", { current, row });
     },

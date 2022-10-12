@@ -12,7 +12,7 @@
                     </el-form-item>
                     <el-form-item prop="password">
                         <el-input v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"
-                            prefix-icon="el-icon-login-password" placeholder="请输入密码"></el-input>
+                            prefix-icon="el-icon-login-password" placeholder="请输入密码" show-password></el-input>
                     </el-form-item>
                     <el-form-item class="loginbtn">
                         <span @click="submitForm('ruleForm')">登录</span>
@@ -32,7 +32,7 @@ import { login, routerBase } from '@/api/login';
 import store from '@/store';
 export default {
     beforeRouteEnter(to, from, next) {
-        if (sessionStorage.getItem('token')) {
+        if (localStorage.getItem('token')) {
             next({ path: '/' })
         } else {
             next()
@@ -69,7 +69,7 @@ export default {
                     login(this.ruleForm).then(res => {
                         console.log(res);
                         store.commit('set_token', res.result.token);
-                        store.commit('set_userName', res.user);
+                        store.commit('set_userName', res.result.username);
                         routerBase().then(res => {
                             this.loading = false;
                             console.log(res.result, 'role');

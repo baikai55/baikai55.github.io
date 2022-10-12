@@ -1,5 +1,5 @@
 import axios from "axios";
-import { MessageBox } from "element-ui";
+import { Message, MessageBox } from "element-ui";
 import router from "../router";
 import nprogress from "nprogress";
 
@@ -16,11 +16,11 @@ request.interceptors.request.use(
     const isToken = (config.headers || {}).isToken === false;
     if (!isToken) {
       config.headers["Authorization"] =
-        "Bearer " + sessionStorage.getItem("token"); // 让每个请求携带自定义token 请根据实际情况自行修改
+        "Bearer " + localStorage.getItem("token"); // 让每个请求携带自定义token 请根据实际情况自行修改
     }
-    // nprogress.start();
+    nprogress.start();
     if (config) {
-      // nprogress.done()
+      nprogress.done();
     }
     return config;
     /* 取到数据后 */
@@ -33,19 +33,26 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   (res) => {
     // console.log("结束加载", res.data);
-    // let code = res.data.code
+    // let code = res.data.errCode
     // if (code !== null) {
-      // nprogress.done()
+    // nprogress.done()
     // }
-    // if (res.data.code == 401) {
-    //   console.log(401, router);
-    //   localStorage.clear()
-    //   router.replace('/')
-    //   MessageBox.alert(`登陆已过期,请重新登录！`, '通知', {
-    //     confirmButtonText: '确定',
-    //   });
-    // }
-
+    console.log();
+    if (res.data.errCode == 401) {
+      console.log(401, router);
+      localStorage.clear();
+      router.replace("/");
+      Message({
+        message: "登录过期，请重新登录",
+        type: "error",
+      });
+    }
+    if (res.data.errCode != 401 && res.data.errCode != 200) {
+      Message({
+        message: `${res.data.errMsg}`,
+        type: "error",
+      });
+    }
     return res.data;
   },
   (err) => {

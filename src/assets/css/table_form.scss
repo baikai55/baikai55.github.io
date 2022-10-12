@@ -16,6 +16,14 @@
       padding: 10px 0;
       text-align-last: left;
     }
+    .user-control-btn {
+      > div {
+        display: flex;
+        button {
+          margin-left: 10px;
+        }
+      }
+    }
   }
 
   .user-control-btn {
@@ -35,7 +43,7 @@
 
       .el-input input.el-input__inner {
         height: 28px;
-        width: 140px;
+        width: 150px;
       }
 
       .el-form-item.select .el-input input.el-input__inner {

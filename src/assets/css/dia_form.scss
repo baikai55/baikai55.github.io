@@ -1,0 +1,10 @@
+.el-dialog {
+  width: 50%;
+  .el-dialog__body {
+    .content-dia {
+      max-height: 50vh;
+      overflow: auto;
+      padding-right: 30px;
+    }
+  }
+}

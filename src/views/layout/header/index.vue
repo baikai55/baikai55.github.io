@@ -30,7 +30,6 @@ export default {
     methods: {
         logout() {
             localStorage.clear()
-            sessionStorage.clear()
             router.push({ path: '/login' })
             location.reload()
         }
@@ -45,6 +44,8 @@ header.el-header {
     align-items: center;
 
     .username {
+        text-align: center;
+        min-width: 50px;
         cursor: pointer;
         position: relative;
 
