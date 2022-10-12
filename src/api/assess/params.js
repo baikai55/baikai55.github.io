@@ -26,7 +26,7 @@ function del(data) {
     data,
   });
 }
-function update() {
+function update(data) {
   return request({
     url: "/sheriff/api/bizParamScore/update",
     method: "put",
@@ -40,4 +40,18 @@ function deleteBatch(data) {
     data,
   });
 }
-export { getClassList, addParams, getParamsList, del, update, deleteBatch };
+function getOne(data) {
+  return request({
+    url: "/sheriff/api/bizParamScore/get/" + data,
+    method: "get",
+  });
+}
+export {
+  getClassList,
+  addParams,
+  getParamsList,
+  del,
+  update,
+  deleteBatch,
+  getOne,
+};

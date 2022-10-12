@@ -29,6 +29,7 @@
 <script>
 import router, { initAsyncRouter } from '@/router';
 import { login, routerBase } from '@/api/login';
+import { setCookie, getCookie, removeCookie } from '@/utils/cookie';
 import store from '@/store';
 export default {
     beforeRouteEnter(to, from, next) {
@@ -43,9 +44,8 @@ export default {
             loading: false,
             remember: false,
             ruleForm: {
-                username: "root",
-                password: "123456",
-                code: '1',
+                username: "",
+                password: "",
             },
             rules: {
                 username: [
@@ -60,7 +60,28 @@ export default {
             }
         };
     },
+    created() {
+        this.rememberPwd()
+    },
     methods: {
+        //remember
+        rememberPwd() {
+            let remember = getCookie('remember')
+            if (remember) {
+                let user = getCookie('user')
+                let pwd = getCookie('pwd')
+                this.ruleForm = {
+                    username: user,
+                    password: pwd,
+                }
+                this.remember = true
+            } else {
+                this.ruleForm = {
+                    username: '',
+                    password: '',
+                }
+            }
+        },
         // 登录
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
@@ -68,15 +89,18 @@ export default {
                     this.loading = true;
                     login(this.ruleForm).then(res => {
                         console.log(res);
-                        store.commit('set_token', res.result.token);
-                        store.commit('set_userName', res.result.username);
-                        routerBase().then(res => {
-                            this.loading = false;
-                            console.log(res.result, 'role');
-                            store.commit('set_userRole', res.result);
-                            initAsyncRouter();
-                            router.push({ path: res.result[0].children[0].path });
-                        })
+                        if (res.errCode == 200) {
+                            this.remember == true ? this.remberme() : this.removeRember();
+                            store.commit('set_token', res.result.token);
+                            store.commit('set_userName', res.result.username);
+                            routerBase().then(res => {
+                                this.loading = false;
+                                console.log(res.result, 'role');
+                                store.commit('set_userRole', res.result);
+                                initAsyncRouter();
+                                router.push({ path: res.result[0].children[0].path });
+                            })
+                        }
                     })
                 } else {
                     console.log('error submit!!');
@@ -84,6 +108,16 @@ export default {
                 }
             });
         },
+        remberme() {
+            setCookie('user', this.ruleForm.username);
+            setCookie('pwd', this.ruleForm.password);
+            setCookie('remember', this.remember);
+        },
+        removeRember() {
+            removeCookie('user');
+            removeCookie('pwd');
+            removeCookie('remember');
+        }
     }
 }
 </script>

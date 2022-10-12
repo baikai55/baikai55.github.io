@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { getClassList, addParams, getParamsList, del, deleteBatch } from '@/api/assess/params';
+import { getClassList, addParams, getParamsList, del, deleteBatch, update, getOne } from '@/api/assess/params';
 export default {
     data() {
         return {
@@ -161,7 +161,7 @@ export default {
                         prop: "", label: "操作", width: "120px", control: true, fixed: 'right',
                         tableOption: [
                             { type: "text", label: "修改", size: "mini", methods: "update", },
-                            { type: "text", label: "删除", title: "这是一段内容确定删除吗？", size: "mini", methods: "delete", },
+                            { type: "text", label: "删除", title: "确定删除吗？", size: "mini", methods: "delete", },
                         ]
                     }
                 ]
@@ -210,7 +210,10 @@ export default {
         confirmDel() {
             del(this.deletelTemp).then(res => {
                 console.log(res, 'deleteTable');
-                this.getTable()
+                if (res.errCode == 200) {
+                    this.successMsg(res.errMsg)
+                    this.getTable()
+                }
             })
         },
         //批量删除
@@ -218,20 +221,23 @@ export default {
             deleteBatch(this.deleteAllTemp).then(res => {
                 console.log(res, 'deleteAll');
                 this.deleteAllTemp = []
-                this.getTable()
+                if (res.errCode == 200) {
+                    this.successMsg(res.errMsg)
+                    this.getTable()
+                }
             })
         },
         //修改
         updateTable(val) {
             this.title = '修改';
             this.dialogVisibleNew = true;
-            console.log(val, 'updateTable');
-            this.formNew = val;
+            getOne(val.id).then(res => {
+                this.formNew = res.result
+            })
         },
         // 新增-获取大类
         classList() {
             getClassList().then(res => {
-                console.log(res)
                 let temp = res.result.map(item => {
                     let tempData = {
                         value: Number(item.id),
@@ -257,22 +263,39 @@ export default {
         // 新增-确认
         newParamsComfig() {
             this.dialogVisibleNew = false
-            addParams(this.formNew).then(res => {
-                console.log(res)
-                this.resetForm()
-                if (res.errCode == 200) {
-                    this.$message({
-                        message: `${res.errMsg}`,
-                        type: 'success'
-                    });
-                    this.getTable()
-                } else {
-                    this.$message({
-                        message: `${res.errMsg}`,
-                        type: 'error'
-                    });
-                }
-            })
+            const { typeName, sequence, scoreValue, operationType, paramGrade, parentId, remark, id } = this.formNew
+            let bigClass = {
+                typeName, sequence, scoreValue, operationType, paramGrade, remark, id
+            }
+            let littleClass = {
+                typeName, sequence, scoreValue, operationType, paramGrade, parentId, remark, id
+            }
+            let temp = paramGrade == 0 ? bigClass : littleClass
+            if (id == undefined) {
+                addParams(temp).then(res => {
+                    this.resetForm()
+                    if (res.errCode == 200) {
+                        this.successMsg(res.errMsg)
+                        this.getTable()
+                    }
+                })
+            } else {
+                update(temp).then(res => {
+                    console.log(res)
+                    this.resetForm()
+                    if (res.errCode == 200) {
+                        this.successMsg(res.errMsg)
+                        this.getTable()
+                    }
+                })
+            }
+        },
+        //成功提示
+        successMsg(val) {
+            this.$message({
+                message: val,
+                type: 'success'
+            });
         },
         // 新增-取消
         newParamsComfigCancel() {

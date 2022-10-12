@@ -62,7 +62,7 @@
                         </el-input>
                     </el-form-item>
                     <el-form-item label="所属机构" prop="parentId">
-                        <el-select v-model="formNew.parentId" placeholder="请选择">
+                        <el-select v-model="formNew.parentId" placeholder="请选择" filterable multiple>
                             <el-option v-for="item in optionsNew" :key="item.id" :label="item.orgName" :value="item.id">
                             </el-option>
                         </el-select>
@@ -124,6 +124,7 @@ export default {
                 roleIds: [],
                 //使用roleIds未知原因，动画不展示
                 roles: []
+                
             },
             optionsNew: [],
             queryParams: {
@@ -155,7 +156,7 @@ export default {
                         prop: "", label: "操作", width: "120px", control: true, fixed: 'right',
                         tableOption: [
                             { type: "text", label: "修改", size: "mini", methods: "update", },
-                            { type: "text", label: "删除", title: "这是一段内容确定删除吗？", size: "mini", methods: "delete", },
+                            { type: "text", label: "删除", title: "确定删除吗？", size: "mini", methods: "delete", },
                         ]
                     }
                 ]
@@ -232,9 +233,9 @@ export default {
         //修改
         updateTable(val) {
             this.title = '修改';
-            this.formNew = val
             getOne(val.id).then(res => {
                 let tempId = []
+                this.formNew = res.result
                 res.result.roles.forEach(element => {
                     tempId.push(element.id)
                 })

@@ -34,7 +34,6 @@
                 <div class="user-control-btn">
                     <div>
                         <el-button id="newstaff" icon="el-icon-plus" size="small" @click="handleAdd">新增</el-button>
-
                     </div>
                 </div>
             </div>

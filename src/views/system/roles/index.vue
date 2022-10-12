@@ -233,7 +233,7 @@ export default {
                         prop: "", label: "操作", width: "120px", control: true, fixed: 'right',
                         tableOption: [
                             { type: "text", label: "修改", size: "mini", methods: "update", },
-                            { type: "text", label: "删除", title: "这是一段内容确定删除吗？", size: "mini", methods: "delete", },
+                            { type: "text", label: "删除", title: "确定删除吗？", size: "mini", methods: "delete", },
                         ]
                     }
                 ]

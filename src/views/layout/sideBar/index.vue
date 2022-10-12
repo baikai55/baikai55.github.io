@@ -56,6 +56,15 @@ aside.el-aside.a-side {
   ul.el-menu-vertical-demo.el-menu {
     border: none;
   }
+
+  .el-menu-item:hover {
+    background: rgba($color: rgb(227, 227, 227), $alpha: 0.4) !important;
+  }
+
+  :deep .el-submenu__title:hover {
+    background: rgba($color: rgb(227, 227, 227), $alpha: 0.4) !important;
+  }
+
 }
 
 aside.el-aside.a-side::-webkit-scrollbar {

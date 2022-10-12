@@ -49,14 +49,14 @@ request.interceptors.response.use(
     }
     if (res.data.errCode != 401 && res.data.errCode != 200) {
       Message({
-        message: `${res.data.errMsg}`,
+        message: `${res.data.errMsg}${res.data.result}`,
         type: "error",
       });
     }
     return res.data;
   },
   (err) => {
-    // nprogress.done()
+    nprogress.done();
     MessageBox.alert(`${err.message}`, "通知", {
       confirmButtonText: "确定",
     });
