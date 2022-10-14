@@ -70,6 +70,15 @@ const scoreA = {
   path: "/assessment/score",
   component: () => import("@/views/assessment/score"),
 };
+const appeal = {
+  path: "/assessment/appeal",
+  component: () => import("@/views/assessment/appeal"),
+};
+const spottest = {
+  path: "/assessment/spottest",
+  component: () => import("@/views/assessment/spottest"),
+};
+
 //
 const control = {
   path: "/notice/control",
@@ -115,6 +124,8 @@ const asyncRouetr = {
   "/assessment/update": update,
   "/assessment/details": details,
   "/assessment/score": scoreA,
+  "/assessment/appeal": appeal,
+  "/assessment/spottest": spottest,
   "/notice/control": control,
   "/notice/update": updateN,
   "/ranking/details": detailsR,

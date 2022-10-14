@@ -2,10 +2,10 @@
   <!-- 左侧导航开始 -->
   <el-aside width="210px" class="a-side">
     <el-menu class="el-menu-vertical-demo" background-color="transparent" :router="true" :default-active="key">
-      <template v-for="item in menuData">
+      <template v-for="item in userRole">
         <el-submenu v-if="item.path !=='*'" :key="item.id" :index="item.path">
           <template slot="title">
-            <!-- <i :class="item.icon"></i> -->
+            <i :class="item.icon"></i>
             <span>{{item.title}}</span>
           </template>
           <el-menu-item :index="subItem.path" v-for="subItem in item.children" :key="subItem.id">
@@ -34,12 +34,12 @@ export default {
   },
   data() {
     return {
-      menuData: []
+      // menuData: []
     };
   },
   mounted() { },
   created() {
-    this.menuData = this.userRole;
+    // this.menuData = this.userRole;
   },
   methods: {
 

@@ -61,8 +61,8 @@
                         <el-input placeholder="请输入内容" v-model="formNew.realName">
                         </el-input>
                     </el-form-item>
-                    <el-form-item label="所属机构" prop="parentId">
-                        <el-select v-model="formNew.parentId" placeholder="请选择" filterable multiple>
+                    <el-form-item label="所属机构" prop="organizationId">
+                        <el-select v-model="formNew.organizationId" placeholder="请选择" filterable>
                             <el-option v-for="item in optionsNew" :key="item.id" :label="item.orgName" :value="item.id">
                             </el-option>
                         </el-select>
@@ -120,11 +120,11 @@ export default {
                 userType: '',
                 password: '',
                 rePassword: "",
-                parentId: '',
+                organizationId: '',
                 roleIds: [],
                 //使用roleIds未知原因，动画不展示
                 roles: []
-                
+
             },
             optionsNew: [],
             queryParams: {
@@ -148,7 +148,7 @@ export default {
                     { prop: "realName", label: "姓名", minWidth: "120px" },
                     {
                         prop: "userType", label: "用户类型", width: "120px", status: true, filters: (val) => val == 0 ? '普通' :
-                            val == 1 ? '管理员' : val = 99 ? '系统管理员' : val
+                            val == 1 ? '管理员' : val = 99 ? '系统管理员' : '未知'
                     },
                     //性别｜1男｜2 女｜0未知
                     { prop: "sex", label: "性别", minWidth: "120px", status: true, filters: (val) => val == 1 ? '男' : val == 2 ? '女' : val == 0 ? '未知' : val },
@@ -234,19 +234,21 @@ export default {
         updateTable(val) {
             this.title = '修改';
             getOne(val.id).then(res => {
-                let tempId = []
-                this.formNew = res.result
-                res.result.roles.forEach(element => {
-                    tempId.push(element.id)
-                })
-                this.formNew.roles = tempId
-                this.dialogVisibleNew = true;
+                if (res.errCode == 200) {
+                    let tempId = []
+                    this.formNew = res.result
+                    res.result.roles.forEach(element => {
+                        return tempId.push(element.id)
+                    })
+                    this.formNew.roles = tempId
+                    this.dialogVisibleNew = true;
+                }
             })
-
         },
         // 机构列表
         getdeptlist() {
             deptList(this.dept).then(res => {
+                console.log(res, 'deptList');
                 this.optionsNew = res.result
             })
         },
@@ -288,11 +290,6 @@ export default {
                         type: 'success'
                     });
                     this.getTable()
-                } else {
-                    this.$message({
-                        message: `${res.errMsg}`,
-                        type: 'error'
-                    });
                 }
             })
         },

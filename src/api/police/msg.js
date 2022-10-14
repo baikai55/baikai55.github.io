@@ -1,57 +1,43 @@
 import request from "@/utils/request";
-function getClassList() {
-  return request({
-    url: "/sheriff/api/bizParamScore/getParents",
-    method: "get",
-  });
-}
 function addParams(data) {
   return request({
-    url: "/sheriff/api/bizParamScore/create",
+    url: "/sheriff/api/bizPoliceUser/create",
     method: "post",
     data,
   });
 }
 function getParamsList(data) {
   return request({
-    url: "/sheriff/api/bizParamScore/page",
+    url: "/sheriff/api/bizPoliceUser/page",
     method: "post",
     data,
   });
 }
 function del(data) {
   return request({
-    url: "/sheriff/api/bizParamScore/delete",
+    url: "/sheriff/api/bizPoliceUser/delete",
     method: "delete",
     data,
   });
 }
 function update(data) {
   return request({
-    url: "/sheriff/api/bizParamScore/update",
+    url: "/sheriff/api/bizPoliceUser/update",
     method: "put",
     data,
   });
 }
 function deleteBatch(data) {
   return request({
-    url: "/sheriff/api/bizParamScore/deleteBatch",
+    url: "/sheriff/api/bizPoliceUser/deleteBatch",
     method: "delete",
     data,
   });
 }
 function getOne(data) {
   return request({
-    url: "/sheriff/api/bizParamScore/get/" + data,
+    url: "/sheriff/api/bizPoliceUser/get/" + data,
     method: "get",
   });
 }
-export {
-  getClassList,
-  addParams,
-  getParamsList,
-  del,
-  update,
-  deleteBatch,
-  getOne,
-};
+export { addParams, getParamsList, del, update, deleteBatch, getOne };

@@ -37,10 +37,10 @@ router.beforeEach((to, from, next) => {
     next();
   } else {
     let token = localStorage.getItem("token");
-    if (token) {
-      next();
-    } else {
+    if (!token) {
       next("/login");
+    } else {
+      next();
     }
   }
 });

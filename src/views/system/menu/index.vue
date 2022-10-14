@@ -43,10 +43,13 @@
                 element-loading-spinner="el-icon-loading" :data="SysMenuList" style="width: 100%; margin-bottom: 20px"
                 row-click="" row-key="id" :default-expand-all="false"
                 :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
-                <el-table-column label="菜单名称" prop="menuName" align="left" :show-overflow-tooltip="true" />
-                <el-table-column label="权限标识" align="center" prop="perms" :show-overflow-tooltip="true" />
-                <el-table-column label="组件路径" align="center" prop="component" :show-overflow-tooltip="true" />
-                <el-table-column label="菜单状态" align="center" prop="visible" :show-overflow-tooltip="true">
+                <el-table-column label="菜单名称" prop="menuName" align="left" :show-overflow-tooltip="true"
+                    min-width="130" />
+                <el-table-column label="权限标识" align="center" prop="perms" :show-overflow-tooltip="true"
+                    min-width="106" />
+                <el-table-column label="组件路径" align="center" prop="component" :show-overflow-tooltip="true"
+                    min-width="106" />
+                <el-table-column label="菜单状态" align="center" prop="visible" :show-overflow-tooltip="true" width="106">
                     <template slot-scope="scope">
                         <el-tag :type="scope.row.visible == 0 ? 'success' : 'danger'">{{
                         scope.row.visible | getname
@@ -59,7 +62,8 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+                <el-table-column label="操作" align="center" class-name="small-padding fixed-width" min-width="106"
+                    fixed="right">
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" @click="handleUpdate(scope.row)">修改
                         </el-button>
@@ -76,6 +80,9 @@
                 </el-form-item>
                 <el-form-item label="菜单名称" prop="menuName">
                     <el-input v-model="form.menuName" placeholder="请输入内容"></el-input>
+                </el-form-item>
+                <el-form-item label="菜单图标" prop="icon">
+                    <el-input v-model="form.icon"></el-input>
                 </el-form-item>
                 <el-form-item label="菜单类型" prop="menuType">
                     <!-- <el-input v-model="form.menuType" placeholder="请输入内容"></el-input> -->
@@ -121,6 +128,9 @@ import {
     putdate,
     getdateone,
 } from "@/api/system/menu";
+import { initAsyncRouter } from "@/router";
+import { routerBase } from '@/api/login';
+import store from '@/store';
 
 export default {
     filters: {
@@ -301,13 +311,15 @@ export default {
         getList() {
             this.loading = true;
             menulist({}).then((res) => {
-                console.log(res);
-                // 修改菜单下拉框
-                this.listM = res.result.filter(item => item.menuType == 'M')
-                this.listC = res.result.filter(item => item.menuType == 'C')
-                this.SysMenuList = this.handleTree(res.result, "id");
-                this.total = res.result.total;
-                this.loading = false;
+                if (res.errCode == 200) {
+                    console.log(res);
+                    // 修改菜单下拉框
+                    this.listM = res.result.filter(item => item.menuType == 'M')
+                    this.listC = res.result.filter(item => item.menuType == 'C')
+                    this.SysMenuList = this.handleTree(res.result, "id");
+                    this.total = res.result.total;
+                    this.loading = false;
+                }
             });
         },
         // 取消按钮
@@ -395,21 +407,34 @@ export default {
                 if (valid) {
                     if (this.form.id != undefined) {
                         putdate(this.form).then((response) => {
-                            this.open = false;
-                            this.getList();
-                            this.$message({
-                                message: response.errMsg,
-                                type: response.success ? "success" : "error",
-                            });
+                            if (response.errCode == 200) {
+                                this.open = false;
+                                this.getList();
+                                this.$message({
+                                    message: response.errMsg,
+                                    type: response.success ? "success" : "error",
+                                });
+                                routerBase().then(res => {
+                                    console.log(res, 'res');
+                                    store.commit('set_userRole', res.result);
+                                    initAsyncRouter();
+                                })
+                            }
                         });
                     } else {
                         createData(this.form).then((response) => {
-                            this.$message({
-                                message: response.errMsg,
-                                type: response.success ? "success" : "error",
-                            });
-                            this.open = false;
-                            this.getList();
+                            if (response.errCode == 200) {
+                                this.open = false;
+                                this.getList();
+                                this.$message({
+                                    message: response.errMsg,
+                                    type: response.success ? "success" : "error",
+                                });
+                                routerBase().then(res => {
+                                    store.commit('set_userRole', res.result);
+                                    initAsyncRouter();
+                                })
+                            }
                         });
                     }
                 }
@@ -425,11 +450,17 @@ export default {
             })
                 .then(() => {
                     deldata(row).then((response) => {
-                        this.$message({
-                            type: response.success ? "success" : "error",
-                            message: response.success ? "删除成功" : "删除失败",
-                        });
-                        this.getList();
+                        if (response.errCode == 200) {
+                            this.getList();
+                            this.$message({
+                                message: response.errMsg,
+                                type: response.success ? "success" : "error",
+                            });
+                            routerBase().then(res => {
+                                store.commit('set_userRole', res.result);
+                                initAsyncRouter();
+                            })
+                        }
                     });
                 })
                 .catch(() => {

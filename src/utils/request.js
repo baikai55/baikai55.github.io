@@ -32,33 +32,30 @@ request.interceptors.request.use(
 );
 request.interceptors.response.use(
   (res) => {
-    // console.log("结束加载", res.data);
-    // let code = res.data.errCode
-    // if (code !== null) {
-    // nprogress.done()
-    // }
-    console.log();
     if (res.data.errCode == 401) {
-      console.log(401, router);
       localStorage.clear();
-      router.replace("/");
+      router.replace("/login");
       Message({
         message: "登录过期，请重新登录",
         type: "error",
       });
     }
     if (res.data.errCode != 401 && res.data.errCode != 200) {
-      Message({
-        message: `${res.data.errMsg}${res.data.result}`,
-        type: "error",
-      });
+      MessageBox.alert(
+        `${res.data.errMsg} : <span style='color:red'>${res.data.result}</span> `,
+        "通知",
+        {
+          confirmButtonText: "确定",
+          dangerouslyUseHTMLString: true,
+        }
+      );
     }
     return res.data;
   },
   (err) => {
-    nprogress.done();
-    MessageBox.alert(`${err.message}`, "通知", {
-      confirmButtonText: "确定",
+    Message({
+      message: `${err.data.errMsg} : ${err.data.result}`,
+      type: "error",
     });
     Promise.reject(err);
   }

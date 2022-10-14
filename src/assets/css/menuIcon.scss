@@ -1,0 +1,10 @@
+.el-icon-police {
+  background: url(@/assets/images/) center no-repeat;
+  background-size: contain;
+}
+
+.el-police:before {
+  content: "\66ff";
+  font-size: 16px;
+  visibility: hidden;
+}
