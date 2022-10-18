@@ -5,7 +5,7 @@
       <template v-for="item in userRole">
         <el-submenu v-if="item.path !=='*'" :key="item.id" :index="item.path">
           <template slot="title">
-            <i :class="item.icon"></i>
+            <i :class="item.icon" class="iconfont" style="margin-right:10px"></i>
             <span>{{item.title}}</span>
           </template>
           <el-menu-item :index="subItem.path" v-for="subItem in item.children" :key="subItem.id">
@@ -64,7 +64,21 @@ aside.el-aside.a-side {
   :deep .el-submenu__title:hover {
     background: rgba($color: rgb(227, 227, 227), $alpha: 0.4) !important;
   }
+}
 
+li.el-menu-item.is-active {
+  color: #409eff !important;
+  background-color: transparent !important;
+}
+
+:deep li.el-submenu.is-active {
+  .el-submenu__title {
+    color: #409eff;
+
+    i {
+      color: #409eff !important;
+    }
+  }
 }
 
 aside.el-aside.a-side::-webkit-scrollbar {

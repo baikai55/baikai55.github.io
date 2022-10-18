@@ -53,7 +53,7 @@
                 :total="pagination.total" :pageNum="pagination.pageNum" :pageSize="pagination.pageSize">
             </Pagination>
         </div>
-        <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
+        <el-dialog :title="title" :visible.sync="dialogVisibleNew"  :before-close="handleClose">
             <div class="content-dia">
                 <el-form ref="formNew" :model="formNew" label-width="80px">
                     <el-form-item label="类型" prop="paramGrade">
@@ -124,6 +124,7 @@ export default {
                 "parentId": '',
                 "total": ''
             },
+            
             optionsNew: [],
             searchFrom: {
                 paramGrade: '',
@@ -137,7 +138,7 @@ export default {
                 tableData: [],
                 header: [
                     { selection: true, width: "70px" },
-                    { prop: "typeName", label: "类型名称", minWidth: "120px" },
+                    { prop: "typeName", label: "类型名称", minWidth: "260px" },
                     { prop: "sequence", label: "序号", minWidth: "120px" },
                     { prop: "scoreValue", label: "分值", minWidth: "120px" },
                     { prop: "total", label: "总分值", minWidth: "120px" },
@@ -148,7 +149,7 @@ export default {
                         prop: "paramGrade", label: "参数等级", width: "110px", status: true, filters: (val) => val == 1 ? '小类' : '大类'
                     },
                     {
-                        prop: "parentId", label: "父级ID", minWidth: "120px", status: true, filters: (val) => {
+                        prop: "parentId", label: "所属大类", minWidth: "120px", status: true, filters: (val) => {
                             let name = '';
                             this.optionsNew.forEach(item => {
                                 if (item.value == val) {
@@ -243,7 +244,7 @@ export default {
             getClassList().then(res => {
                 let temp = res.result.map(item => {
                     let tempData = {
-                        value: Number(item.id),
+                        value: item.id,
                         label: item.typeName
                     }
                     return tempData

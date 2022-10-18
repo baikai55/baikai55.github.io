@@ -105,6 +105,10 @@ const scorerank = {
   path: "/ranking/scorerank",
   component: () => import("@/views/ranking/scorerank"),
 };
+const timing = {
+  path: "/system/timing",
+  component: () => import("@/views/system/timing"),
+};
 
 const asyncRouetr = {
   "/system/dept": dept,
@@ -113,6 +117,7 @@ const asyncRouetr = {
   "/system/roles": roles,
   "/system/white": white,
   "/system/menuManagement": menu,
+  "/system/timing": timing,
   "*": NotFound,
   "/assess/params": params,
   "/assess/type": type,

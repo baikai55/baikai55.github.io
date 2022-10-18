@@ -52,7 +52,7 @@
         </div>
         <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
             <div class="content-dia">
-                <el-form ref="formNew" :model="formNew" label-width="80px">
+                <el-form ref="formNew" :model="formNew" label-width="80px" :rules="rules">
                     <el-form-item label="用户名" prop="userName">
                         <el-input placeholder="请输入内容" v-model="formNew.userName">
                         </el-input>
@@ -92,7 +92,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="newParamsComfigCancel">取 消</el-button>
-                <el-button v-if="title=='新增'" type="primary" @click="newParamsComfig">确 定</el-button>
+                <el-button v-if="title=='新增'" type="primary" @click="newParamsComfig('formNew')">确 定</el-button>
                 <el-button v-else type="primary" @click="updateComfig">确 定</el-button>
             </span>
         </el-dialog>
@@ -125,6 +125,11 @@ export default {
                 //使用roleIds未知原因，动画不展示
                 roles: []
 
+            },
+            rules: {
+                organizationId: [
+                    { required: true, message: '请选择机构', trigger: 'blur' },
+                ],
             },
             optionsNew: [],
             queryParams: {
@@ -266,19 +271,26 @@ export default {
             this.resetForm()
         },
         // 新增-确认
-        newParamsComfig() {
-            this.dialogVisibleNew = false
-            createData(this.formNew).then(res => {
-                console.log(res)
-                this.resetForm()
-                if (res.errCode == 200) {
-                    this.$message({
-                        message: `${res.errMsg}`,
-                        type: 'success'
-                    });
-                    this.getTable()
+        newParamsComfig(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.dialogVisibleNew = false
+                    createData(this.formNew).then(res => {
+                        console.log(res)
+                        this.resetForm()
+                        if (res.errCode == 200) {
+                            this.$message({
+                                message: `${res.errMsg}`,
+                                type: 'success'
+                            });
+                            this.getTable()
+                        }
+                    })
+                } else {
+                    console.log('error submit!!');
+                    return false;
                 }
-            })
+            });
         },
         // 更新-确认
         updateComfig() {
@@ -309,7 +321,7 @@ export default {
                 rePassword: "",
                 parentId: '',
                 roleIds: [],
-
+                organizationId: '',
 
             }
         },

@@ -5,7 +5,7 @@
                 <img src="@/assets/images/login/logo.png" alt="logo"><span>警长伙伴</span>
             </div>
             <div class="login">
-                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
+                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
                     <el-form-item prop="username">
                         <el-input v-model="ruleForm.username" prefix-icon="el-icon-login-user" placeholder="请输入账号">
                         </el-input>
@@ -157,8 +157,8 @@ export default {
             }
 
             span {
-                margin-left: 10px;
-                font-size: 36px;
+                margin-left: .1rem;
+                font-size: .36rem;
                 color: #fff;
             }
         }
@@ -180,6 +180,16 @@ export default {
             justify-content: space-around;
             align-items: flex-start;
 
+            form.el-form.demo-ruleForm {
+                padding-top: 0.2rem;
+                width: 3.1rem;
+                padding-left: 0.5rem;
+                height: 2.1rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
             /* 添加用户名密码小图标 */
             .el-icon-login-user {
                 background: url(@/assets/images/login/user.png) center no-repeat;
@@ -188,7 +198,7 @@ export default {
 
             .el-icon-login-user:before {
                 content: "\66ff";
-                font-size: 16px;
+                font-size: .16rem;
                 visibility: hidden;
             }
 
@@ -199,51 +209,41 @@ export default {
 
             .el-icon-login-password:before {
                 content: "替";
-                font-size: 16px;
+                font-size: .16rem;
                 visibility: hidden;
             }
 
             .el-input__prefix {
-                left: 10px;
+                left: .1rem;
             }
 
             .el-input--prefix .el-input__inner {
-                padding-left: 40px;
+                padding-left: .4rem;
             }
 
+            .el-form-item {
+                margin-bottom: .2rem;
+            }
 
             .el-form-item.loginbtn {
                 position: absolute;
                 top: 41%;
                 right: 11%;
 
+                .el-form-item__content {
+                    line-height: .40rem;
+                    position: relative;
+                    font-size: .14rem;
+                }
+
                 span {
-                    font-size: 40px;
+                    font-size: .4rem;
                     color: #0366CE;
                     cursor: pointer;
                 }
             }
 
-            .el-form-item.code {
-                .el-form-item__content {
-                    display: flex;
 
-                    .left {
-                        width: 60%;
-                    }
-
-                    .right {
-                        width: 40%;
-
-                        img {
-                            box-sizing: border-box;
-                            width: 100%;
-                            height: 40px;
-                            padding-left: 15px;
-                        }
-                    }
-                }
-            }
         }
 
         .el-checkbox {

@@ -57,34 +57,35 @@
                 :total="pagination.total" :pageNum="pagination.pageNum" :pageSize="pagination.pageSize">
             </Pagination>
         </div>
+        <!-- 核验 -->
         <el-dialog :title="title" :visible.sync="checkTaskDivsi" :before-close="handleClose">
             <div class="content-dia">
                 <el-form ref="formNew" :model="checkTaskList" label-width="100px">
                     <el-form-item label="大类" prop="bigTypeId">
-                        <el-select v-model="checkTaskList.bigTypeId" placeholder="请选择" @change="bigClassChange">
+                        <el-select v-model="checkTaskList.bigTypeId" :disabled="checkTaskDisabed" placeholder="请选择" @change="bigClassChange">
                             <el-option v-for="item in optionsNew" :key="item.value" :label="item.label"
                                 :value="item.value">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="小类" prop="smallTypeId">
-                        <el-select v-model="checkTaskList.smallTypeId" placeholder="请选择">
+                        <el-select v-model="checkTaskList.smallTypeId" placeholder="请选择" :disabled="checkTaskDisabed">
                             <el-option v-for="item in littleClass" :key="item.id" :label="item.typeName"
                                 :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="任务标题" prop="taskTitle">
-                        <el-input v-model="checkTaskList.taskTitle" placeholder="请输入内容"></el-input>
+                        <el-input v-model="checkTaskList.taskTitle" placeholder="请输入内容" :disabled="checkTaskDisabed"></el-input>
                     </el-form-item>
                     <!--  -->
-                    <el-form-item label="任务处理描述" prop="typeName">
-                        <el-input v-model="checkTaskList.typeName" placeholder="请输入内容"></el-input>
+                    <el-form-item label="任务处理描述" prop="description">
+                        <el-input v-model="checkTaskList.description" placeholder="请输入内容" :disabled="checkTaskDisabed"></el-input>
                     </el-form-item>
                     <el-form-item label="任务附件" prop="fileName">
                         <template v-if="checkTaskList.attachmentVoList">
                             <img :src="item.fileUrl" alt="" v-for="item in checkTaskList.attachmentVoList"
-                                :key="item.businessId" width="100" @click="ImgClick(item.fileUrl)">
+                                :key="item.businessId" width="100" @click="ImgClick(item.fileUrl)" />
                         </template>
                     </el-form-item>
                     <el-form-item label="考核结果" prop="checkResult">
@@ -95,7 +96,6 @@
                     </el-form-item>
                     <el-form-item label="考核备注" prop="checkRemake">
                         <el-input type="textarea" v-model="checkTaskList.checkRemake" placeholder="请输入内容"></el-input>
-
                     </el-form-item>
                 </el-form>
             </div>
@@ -104,6 +104,7 @@
                 <el-button type="primary" @click="checkTaskComfig">确 定</el-button>
             </span>
         </el-dialog>
+        <!-- 新增、修改 -->
         <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
             <div class="content-dia">
                 <el-form ref="formNew" :model="formNew" label-width="80px">
@@ -125,22 +126,22 @@
                         <el-input v-model="formNew.taskTitle" placeholder="请输入内容"></el-input>
                     </el-form-item>
                     <!--  -->
-                    <el-form-item label="执行类型" prop="operationType">
-                        <el-radio-group v-model="formNew.operationType">
+                    <el-form-item label="执行类型" prop="belonging">
+                        <el-radio-group v-model="formNew.belonging">
                             <el-radio label="1">机构</el-radio>
                             <el-radio label="0">个人</el-radio>
                         </el-radio-group>
                     </el-form-item>
                     <template>
-                        <el-form-item label="执行机构" prop="dept">
-                            <el-select v-model="formNew.dept" placeholder="请选择" filterable>
+                        <el-form-item label="执行机构" prop="organizationId">
+                            <el-select v-model="formNew.organizationId" placeholder="请选择" filterable>
                                 <el-option v-for="item in deptlist" :key="item.id" :label="item.orgName"
                                     :value="item.id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
 
-                        <el-form-item label="执行人" prop="executor" v-if="formNew.operationType==0">
+                        <el-form-item label="执行人" prop="executor" v-if="formNew.belonging == 0">
                             <el-select v-model="formNew.executor" placeholder="请选择" filterable>
                                 <el-option v-for="item in userlist" :key="item.id" :label="item.realName"
                                     :value="item.id">
@@ -165,28 +166,38 @@
             </span>
         </el-dialog>
         <el-dialog :visible.sync="dialogVisibleImg" width="80vw">
-            <img :src="dialogVisibleImgUrl" alt="" class="bigImg">
+            <img :src="dialogVisibleImgUrl" alt="" class="bigImg" />
         </el-dialog>
     </div>
 </template>
 
 <script>
-import { getClassList, getLillteClass } from '@/api/assess/score';
-import { addParams, getParamsList, del, deleteBatch, update, getOne, checkTask, AppTaskCheckList } from '@/api/assessment/task';
-import { deptList } from '@/api/system/dept';
-import { userList } from '@/api/system/user';
+import { getClassList, getLillteClass } from "@/api/assess/score";
+import {
+    addParams,
+    getParamsList,
+    del,
+    deleteBatch,
+    update,
+    getOne,
+    checkTask,
+    AppTaskCheckList,
+} from "@/api/assessment/task";
+import { deptList } from "@/api/system/dept";
+import { userList } from "@/api/system/user";
 export default {
     data() {
         return {
             //放大图片
             dialogVisibleImg: false,
-            dialogVisibleImgUrl: '',
+            dialogVisibleImgUrl: "",
+            checkTaskDisabed: false,
             // 校验任务
             checkTaskDivsi: false,
             checkTaskList: {},
             date: [],
-            title: '',
-            deletelTemp: '',
+            title: "",
+            deletelTemp: "",
             deleteAllTemp: [],
             //新增
             dialogVisibleNew: false,
@@ -194,17 +205,17 @@ export default {
                 bigTypeId: "",
                 smallTypeId: "",
                 taskTitle: "",
-                operationType: "",
+                belonging: "",
                 executor: "",
                 otherScore: "",
-                dept: ""
+                organizationId: "",
             },
             optionsNew: [],
             littleClass: [],
             userlist: [],
             deptlist: [],
             searchFrom: {
-                taskState: '',
+                taskState: "",
             },
             pagination: {
                 total: 0,
@@ -217,313 +228,352 @@ export default {
                     { selection: true, width: "70px" },
                     { prop: "taskTitle", label: "任务标题", minWidth: "120px" },
                     {
-                        prop: "bigTypeId", label: "大类", minWidth: "120px", status: true, filters: (val) => {
-                            let name = '';
-                            this.optionsNew.forEach(item => {
+                        prop: "bigTypeId",
+                        label: "大类",
+                        minWidth: "120px",
+                        status: true,
+                        filters: (val) => {
+                            let name = "";
+                            this.optionsNew.forEach((item) => {
                                 if (item.value == val) {
                                     name = item.label;
                                 }
-                            })
+                            });
                             return name;
-                        }
+                        },
                     },
                     // { prop: "smallTypeId", label: "小类", minWidth: "120px" },
                     {
-                        prop: "taskState", label: "任务状态", minWidth: "120px", status: true,
+                        prop: "taskState",
+                        label: "任务状态",
+                        minWidth: "120px",
+                        status: true,
                         //0:待办｜1:待审核｜2:待申诉｜3:申诉待审核｜99完成
                         filters: (val) => {
-                            let name = '';
+                            let name = "";
                             switch (val) {
                                 case 0:
-                                    name = '待办';
+                                    name = "待办";
                                     break;
                                 case 1:
-                                    name = '待考核';
+                                    name = "待考核";
                                     break;
                                 case 2:
-                                    name = '待申诉';
+                                    name = "待申诉";
                                     break;
                                 case 3:
-                                    name = '申诉待审核';
+                                    name = "申诉待审核";
                                     break;
                                 case 99:
-                                    name = '完成';
+                                    name = "完成";
                                     break;
                             }
                             return name;
-                        }
+                        },
                     },
                     {
-                        prop: "executor", label: "执行人", minWidth: "120px", status: true, filters: (val) => {
-                            let name = '';
-                            this.userlist.forEach(item => {
+                        prop: "executor",
+                        label: "执行人",
+                        minWidth: "120px",
+                        status: true,
+                        filters: (val) => {
+                            let name = "";
+                            this.userlist.forEach((item) => {
                                 if (item.id == val) {
                                     name = item.realName;
                                 }
-                            })
+                            });
                             return name;
-                        }
+                        },
                     },
                     { prop: "startTime", label: "开始时间", minWidth: "120px" },
 
                     { prop: "deadline", label: "超期时间", minWidth: "120px" },
 
                     {
-                        prop: "", label: "操作", width: "160px", control: true, fixed: 'right',
+                        prop: "",
+                        label: "操作",
+                        width: "160px",
+                        control: true,
+                        fixed: "right",
                         tableOption: [
-                            { type: "text", label: "修改", size: "mini", methods: "update", },
-                            { type: "text", label: "核验", size: "mini", methods: "check", },
-                            { type: "text", label: "删除", title: "确定删除吗？", size: "mini", methods: "delete", },
-                        ]
-                    }
-                ]
-            }
+                            { type: "text", label: "修改", size: "mini", methods: "update" },
+                            { type: "text", label: "核验", size: "mini", methods: "check" },
+                            {
+                                type: "text",
+                                label: "删除",
+                                title: "确定删除吗？",
+                                size: "mini",
+                                methods: "delete",
+                            },
+                        ],
+                    },
+                ],
+            },
         };
     },
     created() {
-        this.classList()
-        this.getTable()
-        this.getdeptList()
-        this.getuserList()
+        this.classList();
+        this.getTable();
+        this.getdeptList();
+        this.getuserList();
     },
     methods: {
+        //图片放大
         ImgClick(val) {
             console.log(val);
             this.dialogVisibleImg = true;
-            this.dialogVisibleImgUrl = val
+            this.dialogVisibleImgUrl = val;
         },
+        //时间
         timeChange(val) {
-            let temp = val.map(item => {
-                let mouth = (item.getMonth() + 1) < 10 ? "0" + (item.getMonth() + 1) : (item.getMonth() + 1);
+            let temp = val.map((item) => {
+                let mouth =
+                    item.getMonth() + 1 < 10 ? "0" + (item.getMonth() + 1) : item.getMonth() + 1;
                 let day = item.getDate() < 10 ? "0" + item.getDate() : item.getDate();
                 let hour = item.getHours() < 10 ? "0" + item.getHours() : item.getHours();
                 let minute = item.getMinutes() < 10 ? "0" + item.getMinutes() : item.getMinutes();
                 let second = item.getSeconds() < 10 ? "0" + item.getSeconds() : item.getSeconds();
-                let formatTime2 = item.getFullYear() + "-" + mouth + "-" + day + " " + hour + ":" + minute + ":" + second;
-                return formatTime2
-            })
-            this.formNew.startTime = temp[0]
-            this.formNew.deadline = temp[1]
+                let formatTime2 =
+                    item.getFullYear() +
+                    "-" +
+                    mouth +
+                    "-" +
+                    day +
+                    " " +
+                    hour +
+                    ":" +
+                    minute +
+                    ":" +
+                    second;
+                return formatTime2;
+            });
+            this.formNew.startTime = temp[0];
+            this.formNew.deadline = temp[1];
         },
+        // 选择大类
         bigClassChange(val) {
-            getLillteClass({ id: val }).then(res => {
-                console.log(res, '小类');
+            this.formNew.smallTypeId = "";
+            getLillteClass({ id: val }).then((res) => {
+                console.log(res, "小类");
                 this.littleClass = res.result;
-            })
+            });
         },
+        // 机构
         getdeptList() {
-            deptList({}).then(res => {
+            deptList({}).then((res) => {
                 this.deptlist = res.result;
-            })
+            });
         },
         getuserList() {
-            userList({}).then(res => {
+            userList({}).then((res) => {
                 this.userlist = res.result;
-            })
+            });
         },
         reset() {
             this.searchFrom = {
-                paramGrade: '',
-            }
-            this.getTable()
+                paramGrade: "",
+            };
+            this.getTable();
         },
         search() {
-            let temp = Object.assign(this.searchFrom, this.pagination)
+            let temp = Object.assign(this.searchFrom, this.pagination);
             console.log(temp);
             console.log(this.pagination, this.searchFrom);
-            getParamsList(temp).then(res => {
-                this.table.tableData = res.result.records
-                this.pagination.total = res.result.total
-            })
+            getParamsList(temp).then((res) => {
+                this.table.tableData = res.result.records;
+                this.pagination.total = res.result.total;
+            });
         },
         // 批量删除
         deleteAll() {
             if (this.deleteAllTemp.length <= 0) {
                 this.$message({
-                    message: '请选择要删除的数据',
-                    type: 'warning'
+                    message: "请选择要删除的数据",
+                    type: "warning",
                 });
             }
         },
         //表格操作传参
         handButton(val) {
-            console.log(val, 'handButton');
-            if (val.methods == 'delete') {
+            console.log(val, "handButton");
+            if (val.methods == "delete") {
                 this.deletelTemp = val.row;
-            } else if (val.methods == 'update') {
-                this.updateTable(val.row)
-            } else if (val.methods == 'check') {
-                this.checkTask(val)
+            } else if (val.methods == "update") {
+                this.updateTable(val.row);
+            } else if (val.methods == "check") {
+                this.checkTask(val);
             }
         },
         // 核验
         checkTask(val) {
-            console.log(val.row.taskState, '核验');
+            this.title = "核验";
             if (val.row.taskState == 1) {
-                this.checkTaskDivsi = true
-                AppTaskCheckList(val.row.id).then(res => {
-                    console.log(res, '核验');
+                this.checkTaskDivsi = true;
+                this.checkTaskDisabed = true;
+                AppTaskCheckList(val.row.id).then((res) => {
                     this.checkTaskList = res.result;
-                    getLillteClass({ id: res.result.bigTypeId }).then(res => {
-                        console.log(res, '小类');
+                    getLillteClass({ id: res.result.bigTypeId }).then((res) => {
                         this.littleClass = res.result;
-                    })
-                })
+                    });
+                });
             } else {
                 this.$message({
-                    message: '该任务不可核验',
-                    type: 'warning'
+                    message: "该任务不可核验",
+                    type: "warning",
                 });
             }
-
         },
         checkTaskComfigCancel() {
-            this.checkTaskDivsi = false
+            this.checkTaskDivsi = false;
         },
         //核验确认
         checkTaskComfig() {
-            const { id, checkRemake, checkResult } = this.checkTaskList
+            const { id, checkRemake, checkResult } = this.checkTaskList;
             let temp = {
                 taskId: id,
                 checkRemake,
-                checkResult
-            }
-            checkTask(temp).then(res => {
+                checkResult,
+            };
+            checkTask(temp).then((res) => {
                 if (res.errCode == 200) {
                     this.$message({
                         message: res.errMsg,
-                        type: 'success'
+                        type: "success",
                     });
-                    this.checkTaskDivsi = false
-                    this.getTable()
+                    this.checkTaskDivsi = false;
+                    this.getTable();
                 }
-            })
+            });
         },
         //确认删除
         confirmDel() {
-            del(this.deletelTemp).then(res => {
-                console.log(res, 'deleteTable');
+            del(this.deletelTemp).then((res) => {
+                console.log(res, "deleteTable");
                 if (res.errCode == 200) {
-                    this.successMsg(res.errMsg)
-                    this.getTable()
+                    this.successMsg(res.errMsg);
+                    this.getTable();
                 }
-            })
+            });
         },
         //批量删除
         confirmDelAll() {
-            deleteBatch(this.deleteAllTemp).then(res => {
-                console.log(res, 'deleteAll');
-                this.deleteAllTemp = []
+            deleteBatch(this.deleteAllTemp).then((res) => {
+                console.log(res, "deleteAll");
+                this.deleteAllTemp = [];
                 if (res.errCode == 200) {
-                    this.successMsg(res.errMsg)
-                    this.getTable()
+                    this.successMsg(res.errMsg);
+                    this.getTable();
                 }
-            })
+            });
         },
         //修改
         updateTable(val) {
-            this.title = '修改';
+            this.title = "修改";
             this.dialogVisibleNew = true;
-            getOne(val.id).then(res => {
-                this.formNew = res.result
-            })
+            getOne(val.id).then((res) => {
+                this.formNew = res.result;
+                getLillteClass({ id: res.result.bigTypeId }).then((res) => {
+                    this.littleClass = res.result;
+                });
+            });
         },
         // 新增-获取大类
         classList() {
-            getClassList().then(res => {
-                let temp = res.result.map(item => {
+            getClassList().then((res) => {
+                let temp = res.result.map((item) => {
                     let tempData = {
                         value: item.id,
-                        label: item.typeName
-                    }
-                    return tempData
-                })
-                this.optionsNew = temp
-            })
+                        label: item.typeName,
+                    };
+                    return tempData;
+                });
+                this.optionsNew = temp;
+            });
         },
         // 获取表格数据
         getTable() {
-            getParamsList(this.pagination).then(res => {
-                this.table.tableData = res.result.records
-                this.pagination.total = res.result.total
-            })
+            getParamsList(this.pagination).then((res) => {
+                this.table.tableData = res.result.records;
+                this.pagination.total = res.result.total;
+            });
         },
         //新增
         newParams() {
-            this.title = '新增'
-            this.dialogVisibleNew = true
+            this.title = "新增";
+            this.dialogVisibleNew = true;
         },
         // 新增-确认
         newParamsComfig() {
-            this.dialogVisibleNew = false
-            const { id } = this.formNew
+            this.dialogVisibleNew = false;
+            const { id } = this.formNew;
             if (id == undefined) {
-                addParams(this.formNew).then(res => {
-                    this.resetForm()
+                addParams(this.formNew).then((res) => {
+                    this.resetForm();
                     if (res.errCode == 200) {
-                        this.successMsg(res.errMsg)
-                        this.getTable()
+                        this.successMsg(res.errMsg);
+                        this.getTable();
                     }
-                })
+                });
             } else {
-                update(this.formNew).then(res => {
-                    console.log(res)
-                    this.resetForm()
+                update(this.formNew).then((res) => {
+                    console.log(res);
+                    this.resetForm();
                     if (res.errCode == 200) {
-                        this.successMsg(res.errMsg)
-                        this.getTable()
+                        this.successMsg(res.errMsg);
+                        this.getTable();
                     }
-                })
+                });
             }
         },
         //成功提示
         successMsg(val) {
             this.$message({
                 message: val,
-                type: 'success'
+                type: "success",
             });
         },
         // 新增-取消
         newParamsComfigCancel() {
-            this.dialogVisibleNew = false
-            this.resetForm()
+            this.dialogVisibleNew = false;
+            this.resetForm();
         },
         // 重置表单
         resetForm() {
             this.formNew = {
-                "operationType": "",
-                "paramGrade": "0",
-                "remark": "",
-                "scoreValue": '',
-                "sequence": '',
-                "typeName": "",
-                "parentId": '',
-            }
+                operationType: "",
+                paramGrade: "0",
+                remark: "",
+                scoreValue: "",
+                sequence: "",
+                typeName: "",
+                parentId: "",
+            };
         },
         //离开弹出框
         handleClose(done) {
-            this.$confirm('确认关闭？')
-                .then(_ => {
-                    this.resetForm()
+            this.$confirm("确认关闭？")
+                .then((_) => {
+                    this.resetForm();
                     done();
                 })
-                .catch(_ => { });
+                .catch((_) => { });
         },
         //单选
         select(val) {
-            let temlCurrent = val.current
-            let temp = temlCurrent.map(item => {
-                return item.id
-            })
-            this.deleteAllTemp = temp
+            let temlCurrent = val.current;
+            let temp = temlCurrent.map((item) => {
+                return item.id;
+            });
+            this.deleteAllTemp = temp;
         },
         //全选
         selectAll(val) {
             console.log(val);
-            let temp = val.map(item => {
-                return item.id
-            })
-            this.deleteAllTemp = temp
+            let temp = val.map((item) => {
+                return item.id;
+            });
+            this.deleteAllTemp = temp;
         },
 
         // 分页器一页显示多少条
@@ -536,9 +586,8 @@ export default {
             this.pagination.pageNum = val.currentPage;
             this.getTable();
         },
-
-    }
-}
+    },
+};
 </script>
 
 <style lang="scss" scoped>

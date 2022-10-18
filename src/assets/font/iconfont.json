@@ -1,0 +1,30 @@
+{
+  "id": "3709719",
+  "name": "police",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "32320279",
+      "name": "民警",
+      "font_class": "minjing",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "32318611",
+      "name": "公告",
+      "font_class": "gonggao",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "32318613",
+      "name": "考核模型",
+      "font_class": "kaohemoxing",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    }
+  ]
+}

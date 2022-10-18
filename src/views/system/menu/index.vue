@@ -82,7 +82,7 @@
                     <el-input v-model="form.menuName" placeholder="请输入内容"></el-input>
                 </el-form-item>
                 <el-form-item label="菜单图标" prop="icon">
-                    <el-input v-model="form.icon"></el-input>
+                    <el-input v-model="form.icon" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="菜单类型" prop="menuType">
                     <!-- <el-input v-model="form.menuType" placeholder="请输入内容"></el-input> -->
