@@ -34,9 +34,9 @@ function deleteBatch(data) {
     data,
   });
 }
-function getOne(data) {
+function getOne(data, params) {
   return request({
-    url: "/sheriff/api/bizTask/get/" + data,
+    url: `/sheriff/api/bizTask/oneById/${data}/${params}`,
     method: "get",
   });
 }
@@ -49,8 +49,9 @@ function checkTask(data) {
 }
 function AppTaskCheckList(data) {
   return request({
-    url: "/sheriff/app/bizTask/oneById/" + data,
-    method: "get",
+    url: `/sheriff/api/bizTaskCheck/checkTask`,
+    method: "post",
+    data,
   });
 }
 export {

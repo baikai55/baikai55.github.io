@@ -109,6 +109,10 @@ const timing = {
   path: "/system/timing",
   component: () => import("@/views/system/timing"),
 };
+const important = {
+  path: "/assessment/important",
+  component: () => import("@/views/assessment/important"),
+};
 
 const asyncRouetr = {
   "/system/dept": dept,
@@ -131,6 +135,7 @@ const asyncRouetr = {
   "/assessment/score": scoreA,
   "/assessment/appeal": appeal,
   "/assessment/spottest": spottest,
+  "/assessment/important": important,
   "/notice/control": control,
   "/notice/update": updateN,
   "/ranking/details": detailsR,

@@ -67,6 +67,13 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="用户类型" prop="userType">
+                        <el-select v-model="formNew.userType" placeholder="请选择用户类型" @change="changeType">
+                            <el-option v-for=" item in userTypeData" :key="item.id" :label="item.name" :value="item.id">
+                            </el-option>
+                        </el-select>
+
+                    </el-form-item>
                     <el-form-item label="密码" prop="password">
                         <el-input v-model="formNew.password" placeholder="请输入内容"></el-input>
                     </el-form-item>
@@ -86,7 +93,6 @@
                                 :value="item.id">
                             </el-option>
                         </el-select>
-
                     </el-form-item>
                 </el-form>
             </div>
@@ -101,7 +107,7 @@
 
 <script>
 import {
-    createData, getTableList, update, del, deleteBatch, getOne
+    createData, getTableList, update, del, deleteBatch, getOne, getType
 } from '@/api/system/user';
 import { deptList } from '@/api/system/dept';
 import { getRoleList } from '@/api/system/role';
@@ -123,7 +129,8 @@ export default {
                 organizationId: '',
                 roleIds: [],
                 //使用roleIds未知原因，动画不展示
-                roles: []
+                roles: [],
+                userType: "",
 
             },
             rules: {
@@ -131,6 +138,16 @@ export default {
                     { required: true, message: '请选择机构', trigger: 'blur' },
                 ],
             },
+            //id  roleName
+            userTypeData: [
+                // // 用户类型(0普通｜1管理员|2机构|3民警|4辅警|99系统管理员)
+                // { id: 0, name: '普通' },
+                // { id: 1, name: '管理员' },
+                // { id: 2, name: '机构' },
+                // { id: 3, name: '民警' },
+                // { id: 4, name: '辅警' },
+                // { id: 99, name: '系统管理员' },
+            ],
             optionsNew: [],
             queryParams: {
                 realName: "",
@@ -139,7 +156,10 @@ export default {
             },
             dept: {},
             role: {},
-            rolesData: [],
+            rolesData: [
+
+            ],
+
             pagination: {
                 total: 0,
                 pageNum: 1,
@@ -152,8 +172,13 @@ export default {
                     { prop: "userName", label: "用户名", minWidth: "120px" },
                     { prop: "realName", label: "姓名", minWidth: "120px" },
                     {
-                        prop: "userType", label: "用户类型", width: "120px", status: true, filters: (val) => val == 0 ? '普通' :
-                            val == 1 ? '管理员' : val = 99 ? '系统管理员' : '未知'
+                        prop: "userType", label: "用户类型", width: "120px", status: true, filters: (val) => {
+                            let temp = ''
+                            this.userTypeData.forEach(element => {
+                                return element.id == val ? temp = element.name : val
+                            });
+                            return temp
+                        }
                     },
                     //性别｜1男｜2 女｜0未知
                     { prop: "sex", label: "性别", minWidth: "120px", status: true, filters: (val) => val == 1 ? '男' : val == 2 ? '女' : val == 0 ? '未知' : val },
@@ -174,12 +199,29 @@ export default {
     },
     created() {
         this.getTable()
+        this.getTypeData()
     },
     methods: {
+        // 用户类型数据
+        getTypeData() {
+            getType().then(res => {
+                let temp = res.result.map((item, index) => {
+                    return {
+                        id: index,
+                        name: item
+                    }
+                })
+                this.userTypeData = temp
+            })
+        },
         //选择角色
         changeRole(val) {
             this.formNew.roleIds = val
             console.log(val, this.formNew.roleIds);
+        },
+        // 选择类型
+        changeType(val) {
+            this.formNew.userType = val
         },
         reset() {
             this.queryParams = {

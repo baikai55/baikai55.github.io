@@ -45,7 +45,22 @@ function userList(data) {
   return request({
     url: "/sheriff/api/sysUser/list",
     method: "post",
-    data
+    data,
   });
 }
-export { createData, getTableList, update, del, deleteBatch, getOne, userList };
+function getType() {
+  return request({
+    url: "/sheriff/api/sysUser/getUserType",
+    method: "get",
+  });
+}
+export {
+  createData,
+  getTableList,
+  update,
+  del,
+  deleteBatch,
+  getOne,
+  userList,
+  getType,
+};
