@@ -240,6 +240,7 @@ export default {
             this.title = '修改';
             getOne(val.id).then(res => {
                 if (res.errCode == 200) {
+                    console.log('user',res.result)
                     let tempId = []
                     this.formNew = res.result
                     res.result.roles.forEach(element => {

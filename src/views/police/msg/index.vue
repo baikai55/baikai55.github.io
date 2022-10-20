@@ -7,7 +7,7 @@
             <!-- 搜索开始 -->
             <div class="table-control-search">
                 <el-form :model="searchFrom" inline ref="searchFrom" size="mini">
-                    <el-form-item prop="name" label="运算类型">
+                    <el-form-item prop="name" label="警员姓名">
                         <el-input v-model="searchFrom.name" placeholder="请输入姓名"></el-input>
                     </el-form-item>
                     <el-form-item>
@@ -53,40 +53,17 @@
         <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
             <div class="content-dia">
                 <el-form ref="formNew" :model="formNew" label-width="80px">
-                    <el-form-item label="类型" prop="paramGrade">
-                        <el-radio-group v-model="formNew.paramGrade">
-                            <el-radio label="0">大类</el-radio>
-                            <el-radio label="1">小类</el-radio>
+                    <el-form-item label="警种" prop="type">
+                        <el-radio-group v-model="formNew.type">
+                            <el-radio label="0">辅警</el-radio>
+                            <el-radio label="1">民警</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <template v-if="formNew.paramGrade==1">
-                        <el-form-item label="大类" prop="parentId">
-                            <el-select v-model="formNew.parentId" placeholder="请选择">
-                                <el-option v-for="item in optionsNew" :key="item.value" :label="item.label"
-                                    :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="序号" prop="sequence">
-                            <el-input v-model="formNew.sequence" placeholder="请输入内容"></el-input>
-                        </el-form-item>
-                    </template>
-                    <el-form-item label="名称" prop="typeName">
-                        <el-input v-model="formNew.typeName" placeholder="请输入内容"></el-input>
+                    <el-form-item label="姓名" prop="name">
+                        <el-input v-model="formNew.name" placeholder="请输入内容"></el-input>
                     </el-form-item>
-                    <el-form-item label="分值" prop="scoreValue">
-                        <el-input v-model="formNew.scoreValue" placeholder="请输入内容"></el-input>
-                    </el-form-item>
-                    <el-form-item label="运算类型" prop="operationType">
-                        <el-radio-group v-model="formNew.operationType">
-                            <el-radio label="1">+</el-radio>
-                            <el-radio label="0">-</el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                    <el-form-item label="其他备注" prop="remark">
-                        <el-input type="textarea" resize="none" :rows="7" placeholder="请输入内容" v-model="formNew.remark"
-                            show-word-limit maxlength="500">
-                        </el-input>
+                    <el-form-item label="得分" prop="score">
+                        <el-input v-model="formNew.score" placeholder="请输入内容"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -109,13 +86,10 @@ export default {
             //新增
             dialogVisibleNew: false,
             formNew: {
-                "operationType": "",
-                "paramGrade": "0",
-                "remark": "",
-                "scoreValue": '',
-                "sequence": '',
-                "typeName": "",
-                "parentId": '',
+                'id': '',
+                "name": '',
+                "score": '',
+                "type": '0'
             },
             optionsNew: [],
             searchFrom: {
@@ -229,14 +203,8 @@ export default {
         // 新增-确认
         newParamsComfig() {
             this.dialogVisibleNew = false
-            const { typeName, sequence, scoreValue, operationType, paramGrade, parentId, remark, id } = this.formNew
-            let bigClass = {
-                typeName, sequence, scoreValue, operationType, paramGrade, remark, id
-            }
-            let littleClass = {
-                typeName, sequence, scoreValue, operationType, paramGrade, parentId, remark, id
-            }
-            let temp = paramGrade == 0 ? bigClass : littleClass
+            const { id, name, type, score } = this.formNew
+            let temp = {name, type, score}
             if (id == undefined) {
                 addParams(temp).then(res => {
                     this.resetForm()
@@ -271,13 +239,10 @@ export default {
         // 重置表单
         resetForm() {
             this.formNew = {
-                "operationType": "",
-                "paramGrade": "0",
-                "remark": "",
-                "scoreValue": '',
-                "sequence": '',
-                "typeName": "",
-                "parentId": '',
+                'id': '',
+                "name": '',
+                "score": '',
+                "type": 0
             }
         },
         //离开弹出框
