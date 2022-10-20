@@ -43,10 +43,10 @@
                 :total="pagination.total" :pageNum="pagination.pageNum" :pageSize="pagination.pageSize">
             </Pagination>
         </div>
-        <!-- 核验 -->
+        <!-- 详细、扣分 -->
         <el-dialog :title="title" :visible.sync="checkTaskDivsi" :before-close="handleClose">
             <div class="content-dia">
-                <el-form ref="formNew" :model="checkTaskList" label-width="100px">
+                <el-form ref="checkTaskList" :model="checkTaskList" label-width="100px">
                     <el-form-item label="大类" prop="bigTypeId">
                         <el-select v-model="checkTaskList.bigTypeId" :disabled="checkTaskDisabed" placeholder="请选择">
                             <el-option v-for="item in optionsNew" :key="item.value" :label="item.label"
@@ -62,12 +62,12 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="任务标题" prop="taskTitle">
-                        <el-input v-model="checkTaskList.taskTitle" placeholder="请输入内容" :disabled="checkTaskDisabed">
+                        <el-input v-model="checkTaskList.taskTitle" :disabled="checkTaskDisabed">
                         </el-input>
                     </el-form-item>
                     <!--  -->
                     <el-form-item label="任务处理描述" prop="description">
-                        <el-input v-model="checkTaskList.description" placeholder="请输入内容" :disabled="checkTaskDisabed">
+                        <el-input v-model="checkTaskList.description" :disabled="checkTaskDisabed">
                         </el-input>
                     </el-form-item>
                     <el-form-item label="任务附件" prop="fileName">
@@ -78,11 +78,11 @@
                     </el-form-item>
                     <template v-if="title!='详细'">
                         <el-form-item label="所扣分值" prop="checkResult">
-                            <el-input v-model="checkTaskList.checkResult" placeholder="请输入内容">
+                            <el-input v-model="checkTaskList.checkResult">
                             </el-input>
                         </el-form-item>
                         <el-form-item label="考核备注" prop="checkRemake">
-                            <el-input type="textarea" v-model="checkTaskList.checkRemake" placeholder="请输入内容">
+                            <el-input type="textarea" v-model="checkTaskList.checkRemake">
                             </el-input>
                         </el-form-item>
                     </template>
@@ -90,7 +90,8 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="checkTaskComfigCancel">取 消</el-button>
-                <el-button type="primary" @click="checkTaskComfig">确认扣分</el-button>
+                <el-button v-if="title=='详细'" type="primary" @click="checkTaskDivsi=false">确认</el-button>
+                <el-button v-else type="primary" @click="checkTaskComfig">确认扣分</el-button>
             </span>
         </el-dialog>
         <el-dialog :visible.sync="dialogVisibleImg">
@@ -141,54 +142,28 @@ export default {
                 total: 0,
                 pageNum: 1,
                 pageSize: 10,
+                taskType: 1
             },
             table: {
                 tableData: [],
                 header: [
                     { selection: true, width: "70px" },
                     {
-                        prop: "bigTypeId",
+                        prop: "bigTypeStr",
                         label: "大类",
                         minWidth: "120px",
-                        status: true,
-                        filters: (val) => {
-                            let name = "";
-                            this.optionsNew.forEach((item) => {
-                                if (item.value == val) {
-                                    name = item.label;
-                                }
-                            });
-                            return name;
-                        },
+
                     },
                     {
-                        prop: "smallTypeId", label: "小类", minWidth: "200px",
-                        status: true,
-                        filters: (val) => {
-                            let name = "";
-                            this.initLittleClass.forEach((item) => {
-                                if (item.id == val) {
-                                    name = item.typeName;
-                                }
-                            });
-                            return name;
-                        },
+                        prop: "smallTypeStr", label: "小类", minWidth: "200px",
+
                     },
 
                     {
-                        prop: "executor",
+                        prop: "executorStr",
                         label: "办理警员",
                         minWidth: "120px",
-                        status: true,
-                        filters: (val) => {
-                            let name = "";
-                            this.userlist.forEach((item) => {
-                                if (item.id == val) {
-                                    name = item.realName;
-                                }
-                            });
-                            return name;
-                        },
+
                     },
                     { prop: "completeTime", label: "完成时间", minWidth: "120px" },
 
@@ -216,7 +191,6 @@ export default {
         this.getdeptList();
         this.getuserList();
         this.getLittleClass()
-
     },
     methods: {
         //图片放大
@@ -250,7 +224,7 @@ export default {
             this.getTable();
         },
         search() {
-            let temp = Object.assign(this.searchFrom, this.pagination);
+            let temp = Object.assign({}, this.searchFrom, this.pagination);
             console.log(temp);
             console.log(this.pagination, this.searchFrom);
             getParamsList(temp).then((res) => {
@@ -275,40 +249,30 @@ export default {
             } else if (val.methods == "update") {
                 this.updateTable(val.row);
             } else if (val.methods == "check") {
-                this.checkTask(val);
+                this.checkTask(val.row);
             }
         },
-        // 核验
+        // 扣分
         checkTask(val) {
-            this.title = "核验";
-            if (val.row.taskState == 1) {
-                this.checkTaskDivsi = true;
-                this.checkTaskDisabed = true;
-                AppTaskCheckList(val.row.id).then((res) => {
+            this.title = "扣分";
+            getOne(val.id, val.taskType).then((res) => {
+                if (res.errCode == 200) {
+                    this.checkTaskDivsi = true;
+                    this.checkTaskDisabed = true
                     this.checkTaskList = res.result;
                     getLillteClass({ id: res.result.bigTypeId }).then((res) => {
                         this.littleClass = res.result;
                     });
-                });
-            } else {
-                this.$message({
-                    message: "该任务不可核验",
-                    type: "warning",
-                });
-            }
+                }
+            });
         },
         checkTaskComfigCancel() {
             this.checkTaskDivsi = false;
+            this.resetForm();
         },
         //核验确认
         checkTaskComfig() {
-            const { id, checkRemake, checkResult } = this.checkTaskList;
-            let temp = {
-                taskId: id,
-                checkRemake,
-                checkResult,
-            };
-            checkTask(temp).then((res) => {
+            checkTask(this.checkTaskList).then((res) => {
                 if (res.errCode == 200) {
                     this.$message({
                         message: res.errMsg,
@@ -343,14 +307,16 @@ export default {
         //详细
         updateTable(val) {
             this.title = "详细";
-            this.checkTaskDivsi = true;
-            this.checkTaskDisabed = true
-            getOne(val.id).then((res) => {
-                console.log(res);
-                this.checkTaskList = res.result;
-                getLillteClass({ id: res.result.bigTypeId }).then((res) => {
-                    this.littleClass = res.result;
-                });
+            console.log(val, "updateTable");
+            getOne(val.id, val.taskType).then((res) => {
+                if (res.errCode == 200) {
+                    this.checkTaskDivsi = true;
+                    this.checkTaskDisabed = true
+                    this.checkTaskList = res.result;
+                    getLillteClass({ id: res.result.bigTypeId }).then((res) => {
+                        this.littleClass = res.result;
+                    });
+                }
             });
         },
         // 新增-获取大类
@@ -373,34 +339,6 @@ export default {
                 this.pagination.total = res.result.total;
             });
         },
-        //新增
-        newParams() {
-            this.title = "新增";
-            this.dialogVisibleNew = true;
-        },
-        // 新增-确认
-        newParamsComfig() {
-            this.dialogVisibleNew = false;
-            const { id } = this.formNew;
-            if (id == undefined) {
-                addParams(this.formNew).then((res) => {
-                    this.resetForm();
-                    if (res.errCode == 200) {
-                        this.successMsg(res.errMsg);
-                        this.getTable();
-                    }
-                });
-            } else {
-                update(this.formNew).then((res) => {
-                    console.log(res);
-                    this.resetForm();
-                    if (res.errCode == 200) {
-                        this.successMsg(res.errMsg);
-                        this.getTable();
-                    }
-                });
-            }
-        },
         //成功提示
         successMsg(val) {
             this.$message({
@@ -408,21 +346,16 @@ export default {
                 type: "success",
             });
         },
-        // 新增-取消
-        newParamsComfigCancel() {
-            this.dialogVisibleNew = false;
-            this.resetForm();
-        },
         // 重置表单
         resetForm() {
-            this.formNew = {
-                operationType: "",
-                paramGrade: "0",
-                remark: "",
-                scoreValue: "",
-                sequence: "",
-                typeName: "",
-                parentId: "",
+            this.checkTaskList = {
+                bigTypeId: "",
+                smallTypeId: "",
+                taskTitle: "",
+                description: "",
+                fileName: "",
+                checkResult: "",
+                checkRemake: "",
             };
         },
         //离开弹出框
