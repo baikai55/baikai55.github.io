@@ -6,14 +6,14 @@
         <div class="user-control-nav" ref="itemHeader">
             <!-- 搜索开始 -->
             <div class="table-control-search">
-                <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch"
+                <el-form :model="queryParams" ref="queryForm" :inline="true" size="mini" v-show="showSearch"
                     label-width="68px">
                     <el-form-item label="任务名称" prop="jobName">
-                        <el-input v-model="queryParams.jobName" placeholder="请输入任务名称" clearable style="width: 240px"
+                        <el-input v-model="queryParams.jobName" placeholder="请输入任务名称" clearable
                             @keyup.enter.native="handleQuery" />
                     </el-form-item>
                     <el-form-item label="任务组名" prop="jobGroup">
-                        <el-input v-model="queryParams.jobGroup" placeholder="请输入任务组名" clearable style="width: 240px"
+                        <el-input v-model="queryParams.jobGroup" placeholder="请输入任务组名" clearable
                             @keyup.enter.native="handleQuery" />
                     </el-form-item>
                     <el-form-item>
@@ -77,8 +77,9 @@
 
         <!-- 分页 -->
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-            :current-page="queryParams.pageNum" :page-sizes="[10, 20, 30, 40]" :page-size="queryParams.pageSize"
-            layout="total, sizes, prev, pager, next, jumper" :total="total" v-show="total > 0" />
+            :current-page="queryParams.pageNum" background :page-sizes="[10, 20, 30, 40]"
+            :page-size="queryParams.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total"
+            v-show="total > 0" />
 
         <!-- 添加或修改参数配置对话框 -->
         <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
@@ -356,17 +357,18 @@ export default {
                         putJobUpdata(this.form).then((response) => {
                             this.open = false;
                             this.getList();
-                            this.$notify({
-                                title: response.errMsg,
+                            this.$message({
+                                message: response.errMsg,
                                 type: response.success ? "success" : "error",
-                            });
+                            })
+
                         });
                     } else {
                         getJob(this.form).then((response) => {
-                            this.$notify({
-                                title: response.errMsg,
+                            this.$message({
+                                message: response.errMsg,
                                 type: response.success ? "success" : "error",
-                            });
+                            })
                             this.open = false;
                             this.getList();
                         });

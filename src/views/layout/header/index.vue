@@ -1,7 +1,10 @@
 <template>
     <div class="header">
         <el-header>
-            <p>Header</p>
+            <div class="left">
+                <img class="logo" src="@/assets/images/login/logo.png" alt="">
+                <span>警长伙伴后台管理系统</span>
+            </div>
             <div class="username">
                 {{user}}
                 <div class="logout" @click="logout">
@@ -42,6 +45,17 @@ header.el-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .left {
+        display: flex;
+        align-items: center;
+
+        .logo {
+            margin-right: 20px;
+            width: 36px;
+            height: 36px;
+        }
+    }
 
     .username {
         text-align: center;

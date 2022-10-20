@@ -57,12 +57,12 @@
                     <el-form-item label="角色名称" prop="roleName">
                         <el-input v-model="form.roleName" placeholder="请输入角色名称" />
                     </el-form-item>
-                    <!-- <el-form-item label="角色状态" prop="isDisabled">
+                    <el-form-item label="角色状态" prop="isDisabled">
                         <el-select v-model="form.isDisabled" placeholder="请选择">
                             <el-option label="停用" :value="1"></el-option>
                             <el-option label="启用" :value="0"></el-option>
                         </el-select>
-                    </el-form-item> -->
+                    </el-form-item>
                     <el-form-item prop="roleKey">
                         <span slot="label">
                             <el-tooltip content="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasRole('admin')`)" placement="top">
@@ -312,27 +312,27 @@ export default {
             this.single = selection.length != 1;
             this.multiple = !selection.length;
         },
-        // 修改
-        handleUpdate(row) {
-            this.getMenuList();
-            const dictId = row.id;
-            getRoleGetOne(dictId).then((res) => {
-                let arr = [];
-                res.result.menuIds.forEach((element) => {
-                    return arr.push(element * 1);
-                });
-                this.form = res.result;
-                this.form.menuIds = arr;
-                this.form.menuList = res.result.menuList;
-                this.menuCheckStrictly = true;
-                this.$nextTick(() => {
-                    this.$refs.menu.setCheckedKeys(arr);
-                    this.menuCheckStrictly = false;
-                });
-                this.open = true;
-                this.title = "修改角色";
-            });
-        },
+        // // 修改
+        // handleUpdate(row) {
+        //     this.getMenuList();
+        //     const dictId = row.id;
+        //     getRoleGetOne(dictId).then((res) => {
+        //         let arr = [];
+        //         res.result.menuIds.forEach((element) => {
+        //             return arr.push(element * 1);
+        //         });
+        //         this.form = res.result;
+        //         this.form.menuIds = arr;
+        //         this.form.menuList = res.result.menuList;
+        //         this.menuCheckStrictly = true;
+        //         this.$nextTick(() => {
+        //             this.$refs.menu.setCheckedKeys(arr);
+        //             this.menuCheckStrictly = false;
+        //         });
+        //         this.open = true;
+        //         this.title = "修改角色";
+        //     });
+        // },
         // 更改用户状态
         handleStatusChange(row) {
             let text = row.isDisabled == "0" ? "启用" : "禁用";
@@ -403,6 +403,7 @@ export default {
         },
         // 树权限（父子联动）
         handleCheckedTreeConnect(value, type) {
+            console.log(value, type, "value, type");
             if (type == "menu") {
                 this.form.menuCheckStrictly = value ? true : false;
             } else if (type !== "menu") {
@@ -414,13 +415,12 @@ export default {
             this.open = false;
             this.reset();
         },
+        // 角色选择
         trees(a, key) {
             let keys = key.halfCheckedKeys;
             this.ids = key.checkedKeys;
-            this.ids = this.ids.concat(keys);
             this.menuList = key.checkedNodes;
         },
-
         // 批量删除
         deleteAll() {
             if (this.deleteAllTemp.length <= 0) {
@@ -432,7 +432,6 @@ export default {
         },
         //表格操作传参
         handButton(val) {
-            console.log(val, 'handButton');
             if (val.methods == 'delete') {
                 this.deleteTemp = val.row
             } else if (val.methods == 'update') {
@@ -456,15 +455,18 @@ export default {
                 this.getList()
             })
         },
-        //修改
+        // //修改
         handleUpdate(row) {
             this.getMenuList();
             const dictId = row.id;
             getRoleGetOne(dictId).then((res) => {
                 let arr = [];
                 res.result.menuIds.forEach((element) => {
-                    return arr.push(element * 1);
+                    return arr.push(element.toString());
                 });
+                //父菜单存在的原因、造成显示问题
+                // arr.shift(1)
+                // console.log(arr, 'arr');
                 this.form = res.result;
                 this.form.menuIds = arr;
                 this.form.menuList = res.result.menuList;
