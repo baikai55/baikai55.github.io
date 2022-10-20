@@ -93,7 +93,7 @@
                 <el-button type="primary" @click="checkTaskComfig">确认扣分</el-button>
             </span>
         </el-dialog>
-        <el-dialog :visible.sync="dialogVisibleImg" width="80vw">
+        <el-dialog :visible.sync="dialogVisibleImg">
             <img :src="dialogVisibleImgUrl" alt="" class="bigImg" />
         </el-dialog>
     </div>
