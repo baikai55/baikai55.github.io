@@ -32,7 +32,7 @@
                             <el-button v-if="deleteAllTemp.length <= 0" icon="el-icon-delete" size="small"
                                 @click="deleteAll">批量不扣分
                             </el-button>
-                            <el-popconfirm v-else title="确认删除选中的数据？" @confirm="confirmDelAll">
+                            <el-popconfirm v-else title="确认完成选中的数据？" @confirm="confirmDelAll">
                                 <el-button slot="reference" id="deleteAll" icon="el-icon-delete" size="small">批量不扣分
                                 </el-button>
                             </el-popconfirm>
@@ -50,28 +50,25 @@
                 :total="pagination.total" :pageNum="pagination.pageNum" :pageSize="pagination.pageSize">
             </Pagination>
         </div>
-        <el-dialog :title="title" :visible.sync="dialogVisibleNew_detail">
+        <!-- <el-dialog :title="title" :visible.sync="dialogVisibleNew_detail">
             <div class="content-dia">
                 <el-form ref="formNew" :model="formNew" label-width="50px">
                     <el-form-item label="大类" prop="bigTypeStr">
                         <div class="detail">{{formNew.bigTypeStr}}</div>
-                        <!-- <el-input v-model="formNew.bigtype" :disabled="true"></el-input> -->
                     </el-form-item>
                     <el-form-item label="小类" prop="smallTypeStr">
-                        <!-- <el-input v-model="formNew.smalltype" :disabled="true"></el-input> -->
                         <div class="detail">{{formNew.smallTypeStr}}</div>
                     </el-form-item>
                     <el-form-item label="警员" prop="executorStr">
-                        <!-- <el-input v-model="formNew.name" :disabled="true"></el-input> -->
                         <div class="detail">{{formNew.executorStr}}</div>
                     </el-form-item>
                 </el-form>
             </div>
-            <!-- <span slot="footer" class="dialog-footer">
+            <span slot="footer" class="dialog-footer">
                 <el-button @click="newParamsComfigCancel">取 消</el-button>
                 <el-button type="primary" @click="newParamsComfig">确 定</el-button>
-            </span> -->
-        </el-dialog>
+            </span>
+        </el-dialog> -->
         <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
             <div class="content-dia">
                 <el-form ref="formNew" :model="formNew" label-width="80px">
@@ -84,15 +81,17 @@
                     <el-form-item label="警员" prop="executorStr">
                         <div class="detail">{{formNew.executorStr}}</div>
                     </el-form-item>
-                    <el-form-item label="所扣分值" prop="score">
-                        <el-input v-model="formNew.score" placeholder="请输入分值"></el-input>
-                    </el-form-item>
-                    <el-form-item label="扣分描述" prop="describe">
-                        <el-input v-model="formNew.describe" type="textarea" placeholder="请输入内容"></el-input>
-                    </el-form-item>
+                    <template v-if="title != '详情'">
+                        <el-form-item label="所扣分值" prop="score">
+                            <el-input v-model="formNew.score" placeholder="请输入分值"></el-input>
+                        </el-form-item>
+                        <el-form-item label="扣分描述" prop="describe">
+                            <el-input v-model="formNew.describe" type="textarea" placeholder="请输入内容"></el-input>
+                        </el-form-item>
+                    </template>
                 </el-form>
             </div>
-            <span slot="footer" class="dialog-footer">
+            <span slot="footer" class="dialog-footer" v-if="title != '详情'">
                 <el-button @click="newParamsComfigCancel">取 消</el-button>
                 <el-button type="danger" @click="newParamsComfig">扣 分</el-button>
             </span>
@@ -110,16 +109,16 @@ import {
     deleteBatch,
     update,
     getOne,
+    changeStatus
 } from "@/api/assessment/task";
 export default {
     data() {
         return {
             title: '',
-            deletelTemp: '',
+            deletelTemp: [],
             deleteAllTemp: [],
             //新增
             dialogVisibleNew: false,
-            dialogVisibleNew_detail: false,
             formNew: {
                 'id': '',
                 "executorStr": '',
@@ -163,9 +162,15 @@ export default {
                     {
                         prop: "", label: "操作", width: "180px", control: true, fixed: 'right',
                         tableOption: [
+<<<<<<< HEAD
                             { type: "text", label: "详情", size: "mini", methods: "detail", },
                             { type: "text", label: "扣分", size: "mini", methods: "update", },
                             { type: "success", label: "不扣分", title: "确定删除吗？", size: "mini", methods: "delete", },
+=======
+                            { type: "primary", label: "详情", size: "mini", methods: "detail",},
+                            { type: "danger", label: "扣分", size: "mini", methods: "check",},
+                            { type: "success", label: "不扣分", title: "确定不扣分吗？", size: "mini", methods: "delete",},
+>>>>>>> fce252a8b4731488347e67b6aae7de859666f8dd
                         ]
                     }
                 ]
@@ -219,17 +224,22 @@ export default {
             console.log(val, 'handButton');
             if (val.methods == 'delete') {
                 this.deletelTemp = val.row;
-            } else if (val.methods == 'update') {
+            } else if(val.methods == 'detail'){
                 this.updateTable(val.row)
+<<<<<<< HEAD
             } else if (val.methods == 'detail') {
                 this.title = '详情';
                 this.dialogVisibleNew_detail = true
                 this.formNew = val.row
+=======
+            }else if(val.methods == 'check'){
+                this.checkTask(val.row);
+>>>>>>> fce252a8b4731488347e67b6aae7de859666f8dd
             }
         },
         //确认删除
         confirmDel() {
-            del(this.deletelTemp).then(res => {
+            changeStatus(this.deletelTemp).then(res => {
                 console.log(res, 'deleteTable');
                 if (res.errCode == 200) {
                     this.successMsg(res.errMsg)
@@ -239,7 +249,7 @@ export default {
         },
         //批量删除
         confirmDelAll() {
-            deleteBatch(this.deleteAllTemp).then(res => {
+            changeStatus(this.deleteAllTemp).then(res => {
                 console.log(res, 'deleteAll');
                 this.deleteAllTemp = []
                 if (res.errCode == 200) {
@@ -248,11 +258,23 @@ export default {
                 }
             })
         },
-        //修改
+        // 扣分
+        checkTask(val) {
+            this.title = "扣分";
+            getOne(val.id, val.taskType).then((res) => {
+                if (res.errCode == 200) {
+                    this.dialogVisibleNew = true;
+                    getLillteClass({ id: res.result.bigTypeId }).then((res) => {
+                        this.littleClass = res.result;
+                    });
+                }
+            });
+        },
+        //详情
         updateTable(val) {
-            this.title = '扣分说明';
-            this.dialogVisibleNew = true;
-            getOne(val.id).then(res => {
+            this.title = '详情';
+            getOne(val.id,val.taskType).then(res => {
+                this.dialogVisibleNew = true;
                 this.formNew = res.result
             })
         },
@@ -263,6 +285,7 @@ export default {
                 this.pagination.total = res.result.total
             })
         },
+<<<<<<< HEAD
         //新增
         newParams() {
             this.title = '新增'
@@ -292,6 +315,8 @@ export default {
                 })
             }
         },
+=======
+>>>>>>> fce252a8b4731488347e67b6aae7de859666f8dd
         //成功提示
         successMsg(val) {
             this.$message({
@@ -299,10 +324,23 @@ export default {
                 type: 'success'
             });
         },
-        // 新增-取消
+        // 取消
         newParamsComfigCancel() {
             this.dialogVisibleNew = false
             this.resetForm()
+        },
+        // 确认-扣分
+        newParamsComfig(){
+            checkTask(this.formNew).then((res) => {
+                if (res.errCode == 200) {
+                    this.$message({
+                        message: res.errMsg,
+                        type: "success",
+                    });
+                    this.dialogVisibleNew = false;
+                    this.getTable();
+                }
+            });
         },
         // 重置表单
         resetForm() {

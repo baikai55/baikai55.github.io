@@ -54,6 +54,13 @@ function AppTaskCheckList(data) {
     data,
   });
 }
+function changeStatus(data){
+  return request({
+    url: '/sheriff/api/bizTaskCheck/changeTaskStatusFinished',
+    method: 'post',
+    data,
+  })
+}
 export {
   addParams,
   getParamsList,
@@ -63,4 +70,5 @@ export {
   getOne,
   checkTask,
   AppTaskCheckList,
+  changeStatus
 };
