@@ -136,7 +136,7 @@ export default {
                 total: 0,
                 pageNum: 1,
                 pageSize: 10,
-                taskType:1
+                taskType: 1
             },
             table: {
                 tableData: [],
@@ -163,9 +163,9 @@ export default {
                     {
                         prop: "", label: "操作", width: "180px", control: true, fixed: 'right',
                         tableOption: [
-                            { type: "text", label: "详情", size: "mini", methods: "detail",},
-                            { type: "text", label: "扣分", size: "mini", methods: "update",},
-                            { type: "success", label: "不扣分", title: "确定删除吗？", size: "mini", methods: "delete",},
+                            { type: "text", label: "详情", size: "mini", methods: "detail", },
+                            { type: "text", label: "扣分", size: "mini", methods: "update", },
+                            { type: "success", label: "不扣分", title: "确定删除吗？", size: "mini", methods: "delete", },
                         ]
                     }
                 ]
@@ -221,7 +221,7 @@ export default {
                 this.deletelTemp = val.row;
             } else if (val.methods == 'update') {
                 this.updateTable(val.row)
-            }else if(val.methods == 'detail'){
+            } else if (val.methods == 'detail') {
                 this.title = '详情';
                 this.dialogVisibleNew_detail = true
                 this.formNew = val.row
@@ -272,7 +272,7 @@ export default {
         newParamsComfig() {
             this.dialogVisibleNew = false
             const { id, name, type, score } = this.formNew
-            let temp = {name, type, score}
+            let temp = { name, type, score }
             if (id == undefined) {
                 addParams(temp).then(res => {
                     this.resetForm()
@@ -357,9 +357,10 @@ export default {
 </script>
 
 <style>
-.detail{
+.detail {
     margin-left: 10px;
 }
+
 .el-dialog__body {
     padding: 30px 50px;
 }
