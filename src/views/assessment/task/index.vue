@@ -77,8 +77,8 @@
                         </template>
                     </el-form-item>
                     <template v-if="title!='详细'">
-                        <el-form-item label="所扣分值" prop="checkResult">
-                            <el-input v-model="checkTaskList.checkResult">
+                        <el-form-item label="所扣分值" prop="score">
+                            <el-input v-model="checkTaskList.score">
                             </el-input>
                         </el-form-item>
                         <el-form-item label="考核备注" prop="checkRemake">
@@ -91,7 +91,7 @@
             <span slot="footer" class="dialog-footer">
                 <el-button @click="checkTaskComfigCancel">取 消</el-button>
                 <el-button v-if="title=='详细'" type="primary" @click="checkTaskDivsi=false">确认</el-button>
-                <el-button v-else type="primary" @click="checkTaskComfig">确认扣分</el-button>
+                <el-button v-else type="primary" @click="checkTaskComfig">扣分</el-button>
             </span>
         </el-dialog>
         <el-dialog :visible.sync="dialogVisibleImg">
@@ -152,23 +152,19 @@ export default {
                         prop: "bigTypeStr",
                         label: "大类",
                         minWidth: "120px",
-
                     },
                     {
                         prop: "smallTypeStr", label: "小类", minWidth: "200px",
-
                     },
 
                     {
                         prop: "executorStr",
                         label: "办理警员",
                         minWidth: "120px",
-
                     },
                     { prop: "completeTime", label: "完成时间", minWidth: "120px" },
 
                     { prop: "", label: "所扣分值", minWidth: "120px" },
-
                     {
                         prop: "",
                         label: "操作",
@@ -272,7 +268,13 @@ export default {
         },
         //核验确认
         checkTaskComfig() {
-            checkTask(this.checkTaskList).then((res) => {
+            const { id, score, checkRemake } = this.checkTaskList
+            let temp = {
+                taskId: id,
+                score,
+                checkRemake
+            }
+            AppTaskCheckList(temp).then((res) => {
                 if (res.errCode == 200) {
                     this.$message({
                         message: res.errMsg,
@@ -354,7 +356,7 @@ export default {
                 taskTitle: "",
                 description: "",
                 fileName: "",
-                checkResult: "",
+                score: "",
                 checkRemake: "",
             };
         },

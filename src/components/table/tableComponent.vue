@@ -57,10 +57,10 @@
             <!-- 右侧操作 -->
             <template slot-scope="scope">
               <template v-for="(btn, ind) in item.tableOption">
-                <el-popconfirm :title="btn.title" v-if="btn.label=='删除'" :key="btn.label" @confirm="confirmDel"
+                <el-popconfirm :title="btn.title" v-if="btn.title" :key="btn.label" @confirm="confirmDel"
                   @cancel="cancelDel">
                   <el-button slot="reference" :type="btn.type" :size="btn.size"
-                    @click="handButton(btn.methods, scope.row, scope.$index)">删除</el-button>
+                    @click="handButton(btn.methods, scope.row, scope.$index)">{{btn.label}}</el-button>
                 </el-popconfirm>
                 <el-button v-else :key="ind" :type="btn.type" :size="btn.size"
                   @click="handButton(btn.methods, scope.row, scope.$index)">
