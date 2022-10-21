@@ -128,7 +128,6 @@ export default {
             title: "",
             deletelTemp: "",
             deleteAllTemp: [],
-
             initLittleClass: [],
             optionsNew: [],
             littleClass: [],
@@ -166,14 +165,14 @@ export default {
 
                     { prop: "", label: "所扣分值", minWidth: "120px" },
                     {
-                        prop: "",
+                        prop: "taskState",
                         label: "操作",
                         width: "160px",
                         control: true,
                         fixed: "right",
                         tableOption: [
                             { type: "text", label: "详细", size: "mini", methods: "update" },
-                            { type: "text", label: "扣分", size: "mini", methods: "check" },
+                            { type: "text", label: "扣分", size: "mini", methods: "check", disabled: (val) => val == 2 ? true : val == 99 ? true : false },
                         ],
                     },
                 ],

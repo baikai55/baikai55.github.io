@@ -141,11 +141,15 @@ export default {
                     { prop: "smallTypeStr", label: "小类", minWidth: "180px" },
                     { prop: "executorStr", label: "警员", minWidth: "120px" },
                     {
-                        prop: "taskState", label: "操作", width: "180px", control: true, fixed: 'right',
+                        prop: "taskState",
+                        label: "操作",
+                        width: "200px",
+                        control: true,
+                        fixed: "right",
                         tableOption: [
                             { type: "primary", label: "详情", size: "mini", methods: "detail", },
-                            { type: "danger", label: "扣分", size: "mini", methods: "check",disabled: (val) => val == 2 ? true : val == 99 ? true : false },
-                            { type: "success", label: "不扣分", title: "确定不扣分吗？", size: "mini", methods: "delete", disabled: (val) => val == 2 ? true : val == 99 ? true : false },
+                            { type: "danger", label: "扣分", size: "mini", methods: "check", disabled: (val) => val == 2 ? true : val == 99 ? true : false },
+                            { type: "success", label: "不扣分", title: "确定不扣分吗？", size: "mini", methods: "delete", disabled: (val) => val == 2 ? true : val == 99 ? true : false },
                         ]
                     }
                 ]

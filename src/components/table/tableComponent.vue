@@ -60,10 +60,11 @@
                 <el-popconfirm :title="btn.title" v-if="btn.title" :key="btn.label" @confirm="confirmDel"
                   @cancel="cancelDel">
                   <el-button slot="reference" :type="btn.type" :size="btn.size"
-                    @click="handButton(btn.methods, scope.row, scope.$index)">{{btn.label}}</el-button>
+                    @click="handButton(btn.methods, scope.row, scope.$index)" :disabled="btn.disabled">{{btn.label}}
+                  </el-button>
                 </el-popconfirm>
                 <el-button v-else :key="ind" :type="btn.type" :size="btn.size"
-                  @click="handButton(btn.methods, scope.row, scope.$index)">
+                  @click="handButton(btn.methods, scope.row, scope.$index)" :disabled="btn.disabled">
                   {{ btn.label }}
                 </el-button>
               </template>
