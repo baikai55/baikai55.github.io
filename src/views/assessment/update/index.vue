@@ -162,15 +162,9 @@ export default {
                     {
                         prop: "", label: "操作", width: "180px", control: true, fixed: 'right',
                         tableOption: [
-<<<<<<< HEAD
-                            { type: "text", label: "详情", size: "mini", methods: "detail", },
-                            { type: "text", label: "扣分", size: "mini", methods: "update", },
-                            { type: "success", label: "不扣分", title: "确定删除吗？", size: "mini", methods: "delete", },
-=======
-                            { type: "primary", label: "详情", size: "mini", methods: "detail",},
-                            { type: "danger", label: "扣分", size: "mini", methods: "check",},
-                            { type: "success", label: "不扣分", title: "确定不扣分吗？", size: "mini", methods: "delete",},
->>>>>>> fce252a8b4731488347e67b6aae7de859666f8dd
+                            { type: "primary", label: "详情", size: "mini", methods: "detail", },
+                            { type: "danger", label: "扣分", size: "mini", methods: "check", },
+                            { type: "success", label: "不扣分", title: "确定不扣分吗？", size: "mini", methods: "delete", },
                         ]
                     }
                 ]
@@ -224,17 +218,10 @@ export default {
             console.log(val, 'handButton');
             if (val.methods == 'delete') {
                 this.deletelTemp = val.row;
-            } else if(val.methods == 'detail'){
-                this.updateTable(val.row)
-<<<<<<< HEAD
             } else if (val.methods == 'detail') {
-                this.title = '详情';
-                this.dialogVisibleNew_detail = true
-                this.formNew = val.row
-=======
-            }else if(val.methods == 'check'){
+                this.updateTable(val.row)
+            } else if (val.methods == 'check') {
                 this.checkTask(val.row);
->>>>>>> fce252a8b4731488347e67b6aae7de859666f8dd
             }
         },
         //确认删除
@@ -273,7 +260,7 @@ export default {
         //详情
         updateTable(val) {
             this.title = '详情';
-            getOne(val.id,val.taskType).then(res => {
+            getOne(val.id, val.taskType).then(res => {
                 this.dialogVisibleNew = true;
                 this.formNew = res.result
             })
@@ -285,38 +272,6 @@ export default {
                 this.pagination.total = res.result.total
             })
         },
-<<<<<<< HEAD
-        //新增
-        newParams() {
-            this.title = '新增'
-            this.dialogVisibleNew = true
-        },
-        // 新增-确认
-        newParamsComfig() {
-            this.dialogVisibleNew = false
-            const { id, name, type, score } = this.formNew
-            let temp = { name, type, score }
-            if (id == undefined) {
-                addParams(temp).then(res => {
-                    this.resetForm()
-                    if (res.errCode == 200) {
-                        this.successMsg(res.errMsg)
-                        this.getTable()
-                    }
-                })
-            } else {
-                update(temp).then(res => {
-                    console.log(res)
-                    this.resetForm()
-                    if (res.errCode == 200) {
-                        this.successMsg(res.errMsg)
-                        this.getTable()
-                    }
-                })
-            }
-        },
-=======
->>>>>>> fce252a8b4731488347e67b6aae7de859666f8dd
         //成功提示
         successMsg(val) {
             this.$message({
@@ -330,7 +285,7 @@ export default {
             this.resetForm()
         },
         // 确认-扣分
-        newParamsComfig(){
+        newParamsComfig() {
             checkTask(this.formNew).then((res) => {
                 if (res.errCode == 200) {
                     this.$message({
