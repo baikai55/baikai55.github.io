@@ -53,7 +53,7 @@
                 :total="pagination.total" :pageNum="pagination.pageNum" :pageSize="pagination.pageSize">
             </Pagination>
         </div>
-        <el-dialog :title="title" :visible.sync="dialogVisibleNew"  :before-close="handleClose">
+        <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
             <div class="content-dia">
                 <el-form ref="formNew" :model="formNew" label-width="80px">
                     <el-form-item label="类型" prop="paramGrade">
@@ -82,6 +82,12 @@
                     </el-form-item>
                     <el-form-item label="总分值" prop="total">
                         <el-input v-model="formNew.total" placeholder="请输入内容"></el-input>
+                    </el-form-item>
+                    <el-form-item label="任务类型" prop="taskType">
+                        <el-radio-group v-model="formNew.taskType">
+                            <el-radio label="1">自动下发</el-radio>
+                            <el-radio label="0">手工录入</el-radio>
+                        </el-radio-group>
                     </el-form-item>
                     <el-form-item label="运算类型" prop="operationType">
                         <el-radio-group v-model="formNew.operationType">
@@ -122,9 +128,10 @@ export default {
                 "sequence": '',
                 "typeName": "",
                 "parentId": '',
-                "total": ''
+                "total": '',
+                taskType: '',
             },
-            
+
             optionsNew: [],
             searchFrom: {
                 paramGrade: '',
@@ -267,12 +274,12 @@ export default {
         // 新增-确认
         newParamsComfig() {
             this.dialogVisibleNew = false
-            const { typeName, sequence, scoreValue, operationType, paramGrade, parentId, remark, id, total } = this.formNew
+            const { typeName, sequence, scoreValue, operationType, paramGrade, parentId, remark, id, total, taskType } = this.formNew
             let bigClass = {
-                typeName, sequence, scoreValue, operationType, paramGrade, remark, id, total
+                typeName, sequence, scoreValue, operationType, paramGrade, remark, id, total, taskType
             }
             let littleClass = {
-                typeName, sequence, scoreValue, operationType, paramGrade, parentId, remark, id, total
+                typeName, sequence, scoreValue, operationType, paramGrade, parentId, remark, id, total, taskType
             }
             let temp = paramGrade == 0 ? bigClass : littleClass
             if (id == undefined) {

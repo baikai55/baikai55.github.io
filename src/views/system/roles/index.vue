@@ -73,10 +73,9 @@
                         <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
                     </el-form-item>
                     <el-form-item label="菜单权限">
-                        <el-checkbox v-model="form.menuCheckStrictly"
-                            @change="handleCheckedTreeConnect($event, 'menu')">
-                            父子联动
-                        </el-checkbox>
+                        <template>
+                            <div class="zhanwei"></div>
+                        </template>
                         <el-tree class="tree-border" :data="menuOptions" show-checkbox ref="menu" node-key="id"
                             :default-checked-keys="form.menuIds" :check-strictly="menuCheckStrictly"
                             empty-text="加载中，请稍候" :props="defaultProps" @check="trees"></el-tree>
@@ -115,6 +114,7 @@ import { menulist } from "@/api/system/menu";
 export default {
     data() {
         return {
+            Strictly: false,
             pagination: {
                 total: 0,
                 pageNum: 1,
@@ -242,6 +242,8 @@ export default {
     },
     created() {
         this.getList();
+
+
     },
     methods: {
         getList() {
@@ -312,27 +314,6 @@ export default {
             this.single = selection.length != 1;
             this.multiple = !selection.length;
         },
-        // // 修改
-        // handleUpdate(row) {
-        //     this.getMenuList();
-        //     const dictId = row.id;
-        //     getRoleGetOne(dictId).then((res) => {
-        //         let arr = [];
-        //         res.result.menuIds.forEach((element) => {
-        //             return arr.push(element * 1);
-        //         });
-        //         this.form = res.result;
-        //         this.form.menuIds = arr;
-        //         this.form.menuList = res.result.menuList;
-        //         this.menuCheckStrictly = true;
-        //         this.$nextTick(() => {
-        //             this.$refs.menu.setCheckedKeys(arr);
-        //             this.menuCheckStrictly = false;
-        //         });
-        //         this.open = true;
-        //         this.title = "修改角色";
-        //     });
-        // },
         // 更改用户状态
         handleStatusChange(row) {
             let text = row.isDisabled == "0" ? "启用" : "禁用";
@@ -404,11 +385,7 @@ export default {
         // 树权限（父子联动）
         handleCheckedTreeConnect(value, type) {
             console.log(value, type, "value, type");
-            if (type == "menu") {
-                this.form.menuCheckStrictly = value ? true : false;
-            } else if (type !== "menu") {
-                this.form.deptCheckStrictly = value ? false : true;
-            }
+            this.Strictly = !this.Strictly
         },
         // 取消按钮
         cancel() {
@@ -419,6 +396,7 @@ export default {
         trees(a, key) {
             let keys = key.halfCheckedKeys;
             this.ids = key.checkedKeys;
+            this.ids = this.ids.concat(keys);
             this.menuList = key.checkedNodes;
         },
         // 批量删除
@@ -467,16 +445,16 @@ export default {
                 //父菜单存在的原因、造成显示问题
                 // arr.shift(1)
                 // console.log(arr, 'arr');
+                this.open = true;
+                this.title = "修改角色";
                 this.form = res.result;
                 this.form.menuIds = arr;
                 this.form.menuList = res.result.menuList;
                 this.menuCheckStrictly = true;
-                this.$nextTick(() => {
+                setTimeout(() => {
                     this.$refs.menu.setCheckedKeys(arr);
                     this.menuCheckStrictly = false;
-                });
-                this.open = true;
-                this.title = "修改角色";
+                }, 500);
             });
         },
 
@@ -512,6 +490,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.zhanwei {
+    height: 40px;
+}
 </style>

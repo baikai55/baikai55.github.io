@@ -57,18 +57,32 @@
             <!-- 右侧操作 -->
             <template slot-scope="scope">
               <template v-for="(btn, ind) in item.tableOption">
-                <el-popconfirm :title="btn.title" v-if="btn.title" :key="btn.label" @confirm="confirmDel"
-                  @cancel="cancelDel">
-                  <el-button slot="reference" :type="btn.type" :size="btn.size"
-                    @click="handButton(btn.methods, scope.row, scope.$index)" :disabled="btn.disabled">{{btn.label}}
-                  </el-button>
-                </el-popconfirm>
-                <el-button v-else :key="ind" :type="btn.type" :size="btn.size"
-                  @click="handButton(btn.methods, scope.row, scope.$index)" :disabled="btn.disabled">
-                  {{ btn.label }}
-                </el-button>
-              </template>
+                <template v-if="btn.title">
+                  <el-popconfirm v-if="changeDisabled(scope.row[item.prop],btn.disabled)" :title="btn.title"
+                    :key="btn.label" @confirm="confirmDel" @cancel="cancelDel">
+                    <el-button slot="reference" :type="btn.type" :size="btn.size"
+                      @click="handButton(btn.methods, scope.row, scope.$index)" disabled>
+                      {{btn.label}}
+                    </el-button>
+                  </el-popconfirm>
+                  <el-popconfirm v-else :title="btn.title" :key="ind" @confirm="confirmDel" @cancel="cancelDel">
+                    <el-button slot="reference" :type="btn.type" :size="btn.size"
+                      @click="handButton(btn.methods, scope.row, scope.$index)">{{btn.label}}
+                    </el-button>
+                  </el-popconfirm>
+                </template>
 
+                <template v-else>
+                  <el-button v-if="changeDisabled(scope.row[item.prop],btn.disabled)" :key="ind" :type="btn.type"
+                    :size="btn.size" @click="handButton(btn.methods, scope.row, scope.$index)" disabled>
+                    {{ btn.label }}
+                  </el-button>
+                  <el-button v-else :key="btn.label" :type="btn.type" :size="btn.size"
+                    @click="handButton(btn.methods, scope.row, scope.$index)">
+                    {{ btn.label }}
+                  </el-button>
+                </template>
+              </template>
             </template>
           </el-table-column>
         </template>
@@ -157,6 +171,9 @@ export default {
     });
   },
   methods: {
+    changeDisabled(val, func) {
+      return typeof func === "function" ? func(val) : false;
+    },
     confirmDel() {
       this.$emit("confirmDel");
     },

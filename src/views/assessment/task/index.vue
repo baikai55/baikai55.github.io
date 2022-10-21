@@ -163,7 +163,7 @@ export default {
                     },
                     { prop: "completeTime", label: "完成时间", minWidth: "120px" },
 
-                    { prop: "", label: "所扣分值", minWidth: "120px" },
+                    { prop: "score", label: "所扣分值", minWidth: "120px" },
                     {
                         prop: "taskState",
                         label: "操作",
@@ -171,8 +171,8 @@ export default {
                         control: true,
                         fixed: "right",
                         tableOption: [
-                            { type: "text", label: "详细", size: "mini", methods: "update" },
-                            { type: "text", label: "扣分", size: "mini", methods: "check", disabled: (val) => val == 2 ? true : val == 99 ? true : false },
+                            { type: "text", label: "详细", size: "mini", methods: "update", disabled: false },
+                            { type: "text", label: "扣分", size: "mini", methods: "check", disabled: (val) => val == 2 ? false : true },
                         ],
                     },
                 ],
