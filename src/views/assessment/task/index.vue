@@ -155,7 +155,23 @@ export default {
                     {
                         prop: "smallTypeStr", label: "小类", minWidth: "200px",
                     },
-
+                    {
+                        //（0:待办｜1:待审核｜2:待申诉｜3:申诉待审核｜99完成）
+                        prop: "taskState", label: "任务状态", minWidth: "130px", status: true,
+                        filters: (val) => {
+                            if (val == 0) {
+                                return "待办"
+                            } else if (val == 1) {
+                                return "待审核"
+                            } else if (val == 2) {
+                                return "待申诉"
+                            } else if (val == 3) {
+                                return "申诉待审核"
+                            } else if (val == 99) {
+                                return "完成"
+                            }
+                        }
+                    },
                     {
                         prop: "executorStr",
                         label: "办理警员",

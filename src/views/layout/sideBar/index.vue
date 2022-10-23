@@ -2,20 +2,23 @@
   <!-- 左侧导航开始 -->
   <el-aside width="210px" class="a-side">
     <el-menu class="el-menu-vertical-demo" background-color="transparent" :router="true" :default-active="key">
+      <el-menu-item index="/">首页</el-menu-item>
       <template v-for="item in userRole">
-        <el-submenu v-if="item.path !=='*'" :key="item.id" :index="item.path">
+        <el-submenu v-if="item.path !=='*' && item.hidden!==true" :key="item.id" :index="item.path">
           <template slot="title">
             <i :class="item.icon" class="iconfont" style="margin-right:10px"></i>
             <span>{{item.title}}</span>
           </template>
-          <el-menu-item :index="subItem.path" v-for="subItem in item.children" :key="subItem.id">
-            <template slot="title">
-              <!-- 图标 -->
-              <!-- <i style="padding-right: 10px" :class="subItem.icon"></i> -->
-              <!-- 文本 -->
-              <span>{{ subItem.title }}</span>
-            </template>
-          </el-menu-item>
+          <template v-for="subItem in item.children">
+            <el-menu-item :index="subItem.path" v-if="subItem.hidden!==true" :key="subItem.id">
+              <template slot="title">
+                <!-- 图标 -->
+                <!-- <i style="padding-right: 10px" :class="subItem.icon"></i> -->
+                <!-- 文本 -->
+                <span>{{ subItem.title }}</span>
+              </template>
+            </el-menu-item>
+          </template>
         </el-submenu>
       </template>
     </el-menu>
@@ -39,6 +42,7 @@ export default {
   },
   mounted() { },
   created() {
+    console.log(this.userRole);
     // this.menuData = this.userRole;
   },
   methods: {
