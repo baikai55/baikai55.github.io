@@ -12,7 +12,11 @@ import "@/assets/font/iconfont.css";
 //element-ui
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
+// use echarts
+import * as echarts from 'echarts'
+
 Vue.use(ElementUI);
+Vue.prototype.$echarts = echarts
 
 // 假数据
 import "@/mock";
