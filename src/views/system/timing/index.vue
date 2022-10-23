@@ -48,9 +48,9 @@
 
 
         <!-- table表格-->
-        <el-table v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading"
-            element-loading-background="rgba(9, 56, 84, .5)" :data="SysAttachmentList"
-            @selection-change="handleSelectionChange">
+        <el-table v-loading="loading" element-loading-text="拼命加载中" ref="table" :height="tableHeightComputed"
+            element-loading-spinner="el-icon-loading" element-loading-background="rgba(9, 56, 84, .5)"
+            :data="SysAttachmentList" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" align="center" />
             <el-table-column label="任务名称" align="center" prop="jobName" :show-overflow-tooltip="true" />
             <el-table-column label="目标字符串" align="center" prop="invokeTarget" :show-overflow-tooltip="true" />
@@ -76,10 +76,13 @@
         </el-table>
 
         <!-- 分页 -->
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-            :current-page="queryParams.pageNum" background :page-sizes="[10, 20, 30, 40]"
-            :page-size="queryParams.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total"
-            v-show="total > 0" />
+        <div class="pagination">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                :current-page="queryParams.pageNum" background :page-sizes="[10, 20, 30, 40]"
+                :page-size="queryParams.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total"
+                v-show="total > 0" />
+        </div>
+
 
         <!-- 添加或修改参数配置对话框 -->
         <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
@@ -254,12 +257,39 @@ export default {
                     },
                 ],
             },
+            tableHeight: 0,
+            itemHeaderHeight: 0,
         };
     },
+    computed: {
+        /* 计算表格高度 */
+        tableHeightComputed() {
+            return this.tableHeight - this.itemHeaderHeight + 'px';
+        },
+    },
+    destroyed() {
+        removeEventListener("resize", this.resize);
+        //表格动态高度销毁
+    },
     mounted() {
+        addEventListener("resize", this.resize);
         this.getList();
     },
+    created() {
+        this.$nextTick(() => {
+            let clientHeight = document.documentElement.clientHeight;
+            let itemHeaderHeight =
+                this.$refs["table"].$el.getBoundingClientRect().top + 33;
+            this.tableHeight = clientHeight - itemHeaderHeight;
+        });
+    },
     methods: {
+        //高度监听
+        resize() {
+            let itemheight = document.documentElement.clientHeight;
+            let boundingheight = this.$refs["table"].$el.getBoundingClientRect().top + 33;
+            this.tableHeight = itemheight - boundingheight;
+        },
         /** 查询字典类型列表 */
         getList() {
             this.loading = true;
@@ -462,7 +492,10 @@ export default {
 
 .el-pagination {
     text-align: center;
-    margin: 10px 0;
+}
+
+.pagination {
+    background-color: #fff;
 }
 </style>
   

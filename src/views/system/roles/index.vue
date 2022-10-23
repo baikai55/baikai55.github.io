@@ -24,7 +24,7 @@
         </div>
         <div class="table-control-main">
             <div class="m_text">
-                <p>用户列表</p>
+                <p>角色列表</p>
                 <div class="user-control-btn">
                     <div>
                         <el-button id="newstaff" icon="el-icon-plus" size="small" @click="handleAdd">新增</el-button>

@@ -69,8 +69,6 @@ export function initAsyncRouter() {
       });
     }
   });
-  console.log(currentRoutes, "currentRoutes");
   router.addRoute(...currentRoutes);
-  console.log(router, routes, "router");
 }
 export default router;

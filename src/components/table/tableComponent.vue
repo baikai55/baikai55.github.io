@@ -165,7 +165,7 @@ export default {
   created() {
     this.$nextTick(() => {
       let itemheight = document.documentElement.clientHeight;
-      let boundingheight = this.$refs.table.$el.getBoundingClientRect().top;
+      let boundingheight = this.$refs.table.$el.getBoundingClientRect().top - 32;
       this.tableHeight = itemheight - boundingheight - 80;
 
     });
@@ -189,7 +189,7 @@ export default {
     resize() {
       let itemheight = document.documentElement.clientHeight;
       let boundingheight = this.$refs.table.$el.getBoundingClientRect().top;
-      this.tableHeight = itemheight - boundingheight - 80;
+      this.tableHeight = itemheight - boundingheight - 48;
     },
     handButton(methods, row, index) {
       this.$emit("handButton", { methods: methods, row: row, index: index });

@@ -2,7 +2,10 @@
   <!-- 左侧导航开始 -->
   <el-aside width="210px" class="a-side">
     <el-menu class="el-menu-vertical-demo" background-color="transparent" :router="true" :default-active="key">
-      <el-menu-item index="/">首页</el-menu-item>
+      <el-menu-item index="/">
+        <i class="el-icon-s-home"></i>
+        <span>首页</span>
+      </el-menu-item>
       <template v-for="item in userRole">
         <el-submenu v-if="item.path !=='*' && item.hidden!==true" :key="item.id" :index="item.path">
           <template slot="title">
@@ -27,26 +30,29 @@
 </template>
 
 <script>
+import store from '@/store';
 import { mapState } from 'vuex';
+import { routerBase } from '@/api/login';
+import { initAsyncRouter } from '@/router';
 export default {
   computed: {
     ...mapState(['userRole']),
     key() {
+      routerBase().then(res => {
+        store.commit('set_userRole', res.result);
+        initAsyncRouter();
+      })
       return this.$route.path;
     },
   },
   data() {
     return {
-      // menuData: []
     };
   },
   mounted() { },
   created() {
-    console.log(this.userRole);
-    // this.menuData = this.userRole;
   },
   methods: {
-
   },
 };
 </script>

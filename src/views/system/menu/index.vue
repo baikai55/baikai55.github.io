@@ -40,8 +40,8 @@
         </div>
         <div class="table">
             <el-table ref="table" :height="tableHeightComputed" v-loading="loading" element-loading-text="拼命加载中"
-                element-loading-spinner="el-icon-loading" :data="SysMenuList" style="width: 100%; margin-bottom: 20px"
-                row-click="" row-key="id" :default-expand-all="false"
+                element-loading-spinner="el-icon-loading" :data="SysMenuList" style="width: 100%;" row-click=""
+                row-key="id" :default-expand-all="false"
                 :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
                 <el-table-column label="菜单名称" prop="menuName" align="left" :show-overflow-tooltip="true"
                     min-width="130" />
@@ -283,7 +283,7 @@ export default {
         this.$nextTick(() => {
             let clientHeight = document.documentElement.clientHeight;
             let itemHeaderHeight =
-                this.$refs["table"].$el.getBoundingClientRect().top + 50;
+                this.$refs["table"].$el.getBoundingClientRect().top + 2;
             this.tableHeight = clientHeight - itemHeaderHeight;
         });
     },
@@ -291,7 +291,7 @@ export default {
         //高度监听
         resize() {
             let itemheight = document.documentElement.clientHeight;
-            let boundingheight = this.$refs["table"].$el.getBoundingClientRect().top + 50;
+            let boundingheight = this.$refs["table"].$el.getBoundingClientRect().top + 2;
             this.tableHeight = itemheight - boundingheight;
         },
         search() {

@@ -27,7 +27,7 @@
         </div>
         <div class="table-control-main">
             <div class="m_text">
-                <p>员工列表</p>
+                <p>参数分值列表</p>
                 <div class="user-control-btn">
                     <div>
                         <el-button id="newstaff" icon="el-icon-plus" size="small" @click="newParams">新增</el-button>

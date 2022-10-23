@@ -98,7 +98,7 @@ export default {
                                 console.log(res.result, 'role');
                                 store.commit('set_userRole', res.result);
                                 initAsyncRouter();
-                                router.push({ path: res.result[0].children[0].path });
+                                router.push({ path: '/' });
                             })
                         }
                     })

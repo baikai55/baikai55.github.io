@@ -52,36 +52,29 @@
         </div>
         <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
             <div class="content-dia">
-                <el-form ref="formNew" :model="formNew" label-width="80px" :rules="rules">
+                <el-form ref="formNew" :model="formNew" label-width="100px" :rules="rules">
                     <el-form-item label="用户名" prop="userName">
-                        <el-input placeholder="请输入内容" v-model="formNew.userName">
+                        <el-input placeholder="请输入用户名" v-model="formNew.userName">
                         </el-input>
                     </el-form-item>
                     <el-form-item label="真实姓名" prop="realName">
-                        <el-input placeholder="请输入内容" v-model="formNew.realName">
+                        <el-input placeholder="请输入真实姓名" v-model="formNew.realName">
                         </el-input>
                     </el-form-item>
-                    <el-form-item label="所属机构" prop="organizationId">
-                        <el-select v-model="formNew.organizationId" placeholder="请选择" filterable>
-                            <el-option v-for="item in optionsNew" :key="item.id" :label="item.orgName" :value="item.id">
-                            </el-option>
-                        </el-select>
+                    <el-form-item v-if="formNew.userType!=3" label="身份证号码" prop="idCardNumber">
+                        <el-input placeholder="请输入身份证" v-model="formNew.idCardNumber">
+                        </el-input>
                     </el-form-item>
                     <el-form-item label="用户类型" prop="userType">
                         <el-select v-model="formNew.userType" placeholder="请选择用户类型" @change="changeType">
                             <el-option v-for=" item in userTypeData" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
-
                     </el-form-item>
                     <el-form-item label="密码" prop="password">
                         <el-input v-model="formNew.password" placeholder="请输入内容"></el-input>
                     </el-form-item>
-
-                    <el-form-item label="确认密码" prop="rePassword">
-                        <el-input v-model="formNew.rePassword" placeholder="请输入内容"></el-input>
-                    </el-form-item>
-                    <el-form-item label="性别" prop="sex">
+                    <el-form-item label="性别" prop="sex" v-if="formNew.userType!=3">
                         <el-radio-group v-model="formNew.sex">
                             <el-radio :label="1">男</el-radio>
                             <el-radio :label="2">女</el-radio>
@@ -123,9 +116,9 @@ export default {
                 sex: "",
                 userName: "",
                 realName: "",
+                idCardNumber: "",
                 userType: '',
                 password: '',
-                rePassword: "",
                 organizationId: '',
                 roleIds: [],
                 //使用roleIds未知原因，动画不展示
@@ -194,7 +187,7 @@ export default {
         };
     },
     mounted() {
-        this.getdeptlist()
+        // this.getdeptlist()
         this.getRole()
     },
     created() {
@@ -282,7 +275,6 @@ export default {
             this.title = '修改';
             getOne(val.id).then(res => {
                 if (res.errCode == 200) {
-                    console.log('user',res.result)
                     let tempId = []
                     this.formNew = res.result
                     res.result.roles.forEach(element => {
@@ -293,13 +285,13 @@ export default {
                 }
             })
         },
-        // 机构列表
-        getdeptlist() {
-            deptList(this.dept).then(res => {
-                console.log(res, 'deptList');
-                this.optionsNew = res.result
-            })
-        },
+        // // 机构列表
+        // getdeptlist() {
+        //     deptList(this.dept).then(res => {
+        //         console.log(res, 'deptList');
+        //         this.optionsNew = res.result
+        //     })
+        // },
         // 获取表格数据
         getTable() {
             getTableList(this.pagination).then(res => {

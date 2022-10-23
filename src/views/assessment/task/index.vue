@@ -31,7 +31,21 @@
         </div>
         <div class="table-control-main">
             <div class="m_text">
-                <p>员工列表</p>
+                <p>任务列表</p>
+                <div class="user-control-btn">
+                    <div>
+                        <el-button id="newstaff" icon="el-icon-plus" size="small" @click="newParams">新增</el-button>
+                        <template>
+                            <el-button v-if="deleteAllTemp.length <= 0" icon="el-icon-delete" size="small"
+                                @click="deleteAll">批量删除
+                            </el-button>
+                            <el-popconfirm v-else title="确认删除选中的数据？" @confirm="confirmDelAll">
+                                <el-button slot="reference" id="deleteAll" icon="el-icon-delete" size="small">批量删除
+                                </el-button>
+                            </el-popconfirm>
+                        </template>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="table">
@@ -43,6 +57,53 @@
                 :total="pagination.total" :pageNum="pagination.pageNum" :pageSize="pagination.pageSize">
             </Pagination>
         </div>
+        <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
+            <div class="content-dia">
+                <el-form ref="formNew" :model="formNew" label-width="80px">
+                    <el-form-item label="大类" prop="bigTypeId">
+                        <el-select v-model="formNew.bigTypeId" placeholder="请选择" @change="bigClassChange">
+                            <el-option v-for="item in optionsNew" :key="item.value" :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="小类" prop="smallTypeId">
+                        <el-select v-model="formNew.smallTypeId" placeholder="请选择">
+                            <el-option v-for="item in littleClass" :key="item.id" :label="item.typeName"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="任务标题" prop="taskTitle">
+                        <el-input v-model="formNew.taskTitle" placeholder="请输入内容"></el-input>
+                    </el-form-item>
+                    <!--  -->
+                    <template>
+                        <el-form-item label="执行人" prop="executor">
+                            <el-select v-model="formNew.executor" placeholder="请选择" filterable>
+                                <el-option v-for="item in userlist" :key="item.id" :label="item.realName"
+                                    :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </template>
+
+                    <el-form-item label="起止时间" prop="date">
+                        <el-date-picker v-model="date" type="datetimerange" range-separator="至" start-placeholder="开始日期"
+                            end-placeholder="结束日期" @change="timeChange">
+                        </el-date-picker>
+                    </el-form-item>
+
+
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="newParamsComfigCancel">取 消</el-button>
+                <el-button type="primary" @click="newParamsComfig('formNew')">确 定</el-button>
+
+            </span>
+        </el-dialog>
+
         <!-- 详细、扣分 -->
         <el-dialog :title="title" :visible.sync="checkTaskDivsi" :before-close="handleClose">
             <div class="content-dia">
@@ -76,6 +137,16 @@
                                 :key="item.businessId" width="100" @click="ImgClick(item.fileUrl)" />
                         </template>
                     </el-form-item>
+                    <div class="steps">
+                        <el-form-item class="label" label="任务进度" prop="fileName"></el-form-item>
+                        <el-steps :space="200" :active="checkTaskList.taskState" finish-status="success"
+                            style="width:100%;margin-left: 20px;">
+                            <el-step title="进行中"></el-step>
+                            <el-step title="待审核"></el-step>
+                            <el-step v-if="checkTaskList.taskType==1" title="待申诉"></el-step>
+                            <el-step title="完成"></el-step>
+                        </el-steps>
+                    </div>
                     <template v-if="title!='详细'">
                         <el-form-item label="所扣分值" prop="score">
                             <el-input v-model="checkTaskList.score">
@@ -91,7 +162,7 @@
             <span slot="footer" class="dialog-footer">
                 <el-button @click="checkTaskComfigCancel">取 消</el-button>
                 <el-button v-if="title=='详细'" type="primary" @click="checkTaskDivsi=false">确认</el-button>
-                <el-button v-else type="primary" @click="checkTaskComfig">扣分</el-button>
+                <el-button v-if="title=='扣分'" type="primary" @click="checkTaskComfig">扣分</el-button>
             </span>
         </el-dialog>
         <el-dialog :visible.sync="dialogVisibleImg">
@@ -117,6 +188,7 @@ import { userList } from "@/api/system/user";
 export default {
     data() {
         return {
+            dialogVisibleNew: false,
             //放大图片
             dialogVisibleImg: false,
             dialogVisibleImgUrl: "",
@@ -126,6 +198,16 @@ export default {
             checkTaskList: {},
             date: [],
             title: "",
+            formNew: {
+                bigTypeId: '',
+                smallTypeId: '',
+                taskTitle: '',
+                description: '',
+                startTime: '',
+                endTime: '',
+                otherScore: '',
+                taskState: 98
+            },
             deletelTemp: "",
             deleteAllTemp: [],
             initLittleClass: [],
@@ -141,7 +223,7 @@ export default {
                 total: 0,
                 pageNum: 1,
                 pageSize: 10,
-                taskType: 1
+                taskType: 0
             },
             table: {
                 tableData: [],
@@ -156,7 +238,7 @@ export default {
                         prop: "smallTypeStr", label: "小类", minWidth: "200px",
                     },
                     {
-                        //（0:待办｜1:待审核｜2:待申诉｜3:申诉待审核｜99完成）
+                        //（0:待办｜1:待审核｜2:待申诉｜3:申诉待审核｜98:完成待抽查|99完成）
                         prop: "taskState", label: "任务状态", minWidth: "130px", status: true,
                         filters: (val) => {
                             if (val == 0) {
@@ -167,7 +249,11 @@ export default {
                                 return "待申诉"
                             } else if (val == 3) {
                                 return "申诉待审核"
-                            } else if (val == 99) {
+                            }
+                            else if (val == 98) {
+                                return "完成待抽查"
+                            }
+                            else if (val == 99) {
                                 return "完成"
                             }
                         }
@@ -181,14 +267,15 @@ export default {
 
                     { prop: "score", label: "所扣分值", minWidth: "120px" },
                     {
-                        prop: "taskState",
+                        prop: "caozuo",
                         label: "操作",
                         width: "160px",
                         control: true,
                         fixed: "right",
                         tableOption: [
-                            { type: "text", label: "详细", size: "mini", methods: "update", disabled: false },
+                            { type: "text", label: "详细", size: "mini", methods: "update" },
                             { type: "text", label: "扣分", size: "mini", methods: "check", disabled: (val) => val == 2 ? false : true },
+                            { type: "text", label: "删除", title: "确定删除吗？", size: "mini", methods: "delete", },
                         ],
                     },
                 ],
@@ -204,6 +291,56 @@ export default {
         this.getLittleClass()
     },
     methods: {
+        timeChange(val) {
+            let temp = val.map(item => {
+                let mouth = (item.getMonth() + 1) < 10 ? "0" + (item.getMonth() + 1) : (item.getMonth() + 1);
+                let day = item.getDate() < 10 ? "0" + item.getDate() : item.getDate();
+                let hour = item.getHours() < 10 ? "0" + item.getHours() : item.getHours();
+                let minute = item.getMinutes() < 10 ? "0" + item.getMinutes() : item.getMinutes();
+                let second = item.getSeconds() < 10 ? "0" + item.getSeconds() : item.getSeconds();
+                let formatTime2 = item.getFullYear() + "-" + mouth + "-" + day + " " + hour + ":" + minute + ":" + second;
+                return formatTime2
+            })
+            this.formNew.startTime = temp[0]
+            this.formNew.deadline = temp[1]
+        },
+        bigClassChange(val) {
+            getLillteClass({ id: val }).then(res => {
+                console.log(res, '小类');
+                this.littleClass = res.result;
+            })
+        },
+
+        //新增
+        newParams() {
+            this.title = '新增'
+            this.dialogVisibleNew = true
+            this.resetForm()
+        },
+        // 新增-确认
+        newParamsComfig(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.dialogVisibleNew = false
+                    addParams(this.formNew).then(res => {
+                        console.log(res)
+                        this.resetForm()
+                        if (res.errCode == 200) {
+                            this.$message({
+                                message: `${res.errMsg}`,
+                                type: 'success'
+                            });
+                            this.getTable()
+                        }
+                    })
+                }
+            });
+        },
+        // 新增-取消
+        newParamsComfigCancel() {
+            this.dialogVisibleNew = false
+            this.resetForm()
+        },
         //图片放大
         ImgClick(val) {
             console.log(val);
@@ -225,7 +362,10 @@ export default {
         },
         getuserList() {
             userList({}).then((res) => {
-                this.userlist = res.result;
+                let temp = res.result.filter(item => {
+                    return item.userType == 5
+                })
+                this.userlist = temp
             });
         },
         reset() {
@@ -352,7 +492,24 @@ export default {
         // 获取表格数据
         getTable() {
             getParamsList(this.pagination).then((res) => {
-                this.table.tableData = res.result.records;
+
+                let temp = res.result.records.map((item) => {
+                    let tempData = {
+                        id: item.id,
+                        bigTypeStr: item.bigTypeStr,
+                        smallTypeStr: item.smallTypeStr,
+                        taskState: item.taskState,
+                        executorStr: item.executorStr,
+                        completeTime: item.completeTime,
+                        score: item.score,
+                        taskState: item.taskState,
+                        caozuo: item.taskState,
+                        taskType: item.taskType,
+                        taskState: item.taskState
+                    };
+                    return tempData;
+                });
+                this.table.tableData = temp;
                 this.pagination.total = res.result.total;
             });
         },
@@ -373,6 +530,7 @@ export default {
                 fileName: "",
                 score: "",
                 checkRemake: "",
+                taskState: null,
             };
         },
         //离开弹出框
@@ -419,5 +577,9 @@ export default {
 .bigImg {
     width: 100%;
     height: 100%;
+}
+
+.steps {
+    display: flex;
 }
 </style>

@@ -12,5 +12,12 @@ function routerBase() {
     method: "get",
   });
 }
+function changePassword(data) {
+  return request({
+    url: "/sheriff/changePassword",
+    method: "post",
+    data
+  });
+}
 
-export { login, routerBase };
+export { login, routerBase, changePassword };
