@@ -37,16 +37,16 @@
     <div class="bodyChart">
       <div class="label">任务完成情况</div>
       <div class="chartsBox">
-        <div class="weekTask">
-          <div class="charts" ref="weekTask"></div>
+        <div class="charts">
+          <div class="weekTask" ref="weekTask"></div>
           <div class="chartsLabel">周任务</div>
         </div>
-        <div class="monthTask">
-          <div class="charts" ref="monthTask"></div>
+        <div class="charts">
+          <div class="monthTask" ref="monthTask"></div>
           <div class="chartsLabel">月任务</div>
         </div>
-        <div class="seasonTask">
-          <div class="charts" ref="seasonTask"></div>
+        <div class="charts">
+          <div class="seasonTask" ref="seasonTask"></div>
           <div class="chartsLabel">季任务</div>
         </div>
       </div>
@@ -58,12 +58,7 @@
       <div class="tasks">
         <div class="title">
           <div class="title_text">待办任务</div>
-          <div
-            class="title_checkAll"
-            @click="jump"
-          >
-            查看全部
-          </div>
+          <div class="title_checkAll" @click="jump">查看全部</div>
         </div>
         <div class="taskList">
           <div v-for="(item, index) in taskList" :key="index" class="taskCell">
@@ -126,7 +121,10 @@ export default {
       ];
     },
     async handleGetRealData() {
-      let result = await this.getRealData();
+      let result = await this.getRealData().catch((e) => {
+        this.$message.error("获取数据出错");
+        return;
+      });
       let weekTaskData = [
         { value: result.weekTaskCompleted, name: "已完成" },
         { value: result.weekTaskInComplete, name: "未完成" },
@@ -148,7 +146,9 @@ export default {
       this.position = result.userType;
 
       // 获取数据 - 待办任务
-      this.taskList = result.todoTask.splice(0, 2);
+      if (result.todoTask) {
+        this.taskList = result.todoTask.splice(0, 2);
+      }
     },
     getRealData() {
       return new Promise((resolve, reject) => {
@@ -171,7 +171,7 @@ export default {
         myChart = this.$echarts.init(dom);
       }
 
-      let colorList = ["rgba(36,170,255,1)", "#aca3a3"];
+      let colorList = ["#1479EE", "#DCDCDC"];
 
       let option = {
         tooltip: {
@@ -186,7 +186,7 @@ export default {
           {
             name: "",
             type: "pie",
-            radius: ["40%", "70%"],
+            radius: ["50%", "70%"],
             avoidLabelOverlap: false,
             label: {
               show: false,
@@ -218,9 +218,9 @@ export default {
       //   myChart.resize(); //myChart1.resize();    //若有多个图表变动，可多写
       // };
     },
-    jump(){
-      router.push({ path: '/assessment/task' })
-    }
+    jump() {
+      router.push({ path: "/assessment/task" });
+    },
   },
 };
 </script>
@@ -357,30 +357,26 @@ $padding: 20px;
   .chartsBox {
     display: flex;
     width: 100%;
-    // height: 80%;
-  }
-  .charts {
-    width: 100%;
-    height: 100%;
-  }
-  .chartsLabel {
-    font-size: 14px;
-    font-weight: 600;
-    text-align: center;
-  }
-  .weekTask,
-  .monthTask,
-  .seasonTask {
-    width: 33%;
-    height: 300px;
-  }
-  .weekTask {
-  }
-  .monthTask {
-    border-left: 1px solid rgba(128, 128, 128, 0.3);
-    border-right: 1px solid rgba(128, 128, 128, 0.3);
-  }
-  .seasonTask {
+    .charts {
+      margin-top: 20px;
+      width: 100%;
+      .weekTask,
+      .monthTask,
+      .seasonTask {
+        width: 100%;
+        height: 200px;
+      }
+      .monthTask {
+        border-left: 1px solid rgba(128, 128, 128, 0.3);
+        border-right: 1px solid rgba(128, 128, 128, 0.3);
+      }
+      .chartsLabel {
+        font-size: 14px;
+        font-weight: 600;
+        margin: 20px 0px;
+        text-align: center;
+      }
+    }
   }
 }
 

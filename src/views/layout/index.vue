@@ -50,7 +50,7 @@ main.el-main {
   background-color: #f5f5fc;
   padding-bottom: 0;
 
-  .bgc {
+  .table-form {
     background-color: #fff;
     padding: 20px;
     padding-bottom: 0;
