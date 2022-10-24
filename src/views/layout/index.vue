@@ -9,7 +9,9 @@
             <el-main>
               <!-- <Bread></Bread> -->
               <!-- <Tabs></Tabs> -->
-              <router-view :key="key"></router-view>
+              <div class="bgc">
+                <router-view :key="key"></router-view>
+              </div>
             </el-main>
           </el-container>
         </el-container>
@@ -47,5 +49,11 @@ export default {
 main.el-main {
   background-color: #f5f5fc;
   padding-bottom: 0;
+
+  .bgc {
+    background-color: #fff;
+    padding: 20px;
+    padding-bottom: 0;
+  }
 }
 </style>

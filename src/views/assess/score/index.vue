@@ -95,6 +95,13 @@
                             <el-radio label="0">-</el-radio>
                         </el-radio-group>
                     </el-form-item>
+                    <el-form-item label="考核用户" prop="scoreValue">
+                        <el-select v-model="formNew.parentId" placeholder="请选择" multiple filterable>
+                            <el-option v-for="item in optionsNew" :key="item.value" :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item label="其他备注" prop="remark">
                         <el-input type="textarea" resize="none" :rows="7" placeholder="请输入内容" v-model="formNew.remark"
                             show-word-limit maxlength="500">

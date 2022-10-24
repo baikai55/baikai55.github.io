@@ -5,8 +5,12 @@
                 <img class="logo" src="@/assets/images/login/logo.png" alt="">
                 <span>警长伙伴后台管理系统</span>
             </div>
+
             <div class="username">
-                {{user}}
+                <div class="ava">
+                    <img src="@/assets/images/avatar.png" alt="">
+                </div>
+                <p>{{user}}</p>
                 <div class="logout">
                     <P @click="logout">退出登录</P>
                     <P @click="change">修改密码</P>
@@ -136,29 +140,48 @@ header.el-header {
         }
     }
 
+
+
     .username {
         text-align: center;
-        min-width: 80px;
-        cursor: pointer;
         position: relative;
+        height: 100%;
+        display: flex;
+        align-items: center;
+
+        >p {
+            min-width: 80px;
+            cursor: pointer;
+            line-height: 55px;
+        }
+
+        .ava {
+            width: 48px;
+            height: 48px;
+
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+            }
+        }
 
         .logout {
             cursor: pointer;
-            display: block;
+            display: none;
             position: absolute;
             width: 100%;
             text-align: center;
             border: 1px solid #ccc;
             background-color: #fff;
             color: #000;
-            top: 20px;
-            top: 40px;
+            top: 60px;
             line-height: 40px;
         }
     }
-}
 
-.username:hover .logout {
-    display: block;
+    .username:hover .logout {
+        display: block;
+    }
 }
 </style>

@@ -198,6 +198,7 @@ export default {
         // 用户类型数据
         getTypeData() {
             getType().then(res => {
+                console.log(res, 'res.result');
                 let temp = res.result.map((item, index) => {
                     return {
                         id: index,
