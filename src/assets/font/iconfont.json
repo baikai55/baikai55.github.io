@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "32458304",
+      "name": "任务管理",
+      "font_class": "renwuguanli",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
       "icon_id": "32320279",
       "name": "民警",
       "font_class": "minjing",

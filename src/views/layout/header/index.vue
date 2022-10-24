@@ -122,6 +122,8 @@ header.el-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: #2e69eb;
+    color: white;
 
     .left {
         display: flex;
@@ -142,15 +144,21 @@ header.el-header {
 
         .logout {
             cursor: pointer;
-            display: none;
+            display: block;
             position: absolute;
             width: 100%;
             text-align: center;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            color: #000;
+            top: 20px;
+            top: 40px;
+            line-height: 40px;
         }
     }
+}
 
-    .username:hover .logout {
-        display: block;
-    }
+.username:hover .logout {
+    display: block;
 }
 </style>

@@ -45,7 +45,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 main.el-main {
-  background-color: rgb(212, 212, 212);
+  background-color: #f5f5fc;
   padding-bottom: 0;
 }
 </style>
