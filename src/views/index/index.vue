@@ -137,9 +137,9 @@ export default {
         { value: result.quarterTaskCompleted, name: "已完成" },
         { value: result.quarterTaskInComplete, name: "未完成" },
       ];
-      this.drawCharts("weekTask", weekTaskData);
-      this.drawCharts("monthTask", monthTaskData);
-      this.drawCharts("seasonTask", seasonTaskData);
+      this.drawCharts("weekTask", weekTaskData, result.weekTaskTotal);
+      this.drawCharts("monthTask", monthTaskData, result.monthTaskTotal);
+      this.drawCharts("seasonTask", seasonTaskData, result.quarterTaskTotal);
 
       // 获取数据 - 用户信息
       this.userName = result.loginName;
@@ -161,7 +161,7 @@ export default {
         });
       });
     },
-    drawCharts(refName, data) {
+    drawCharts(refName, data, total) {
       let dom = this.$refs[refName];
       let myChart = this.$echarts.getInstanceByDom(dom);
 
@@ -192,15 +192,22 @@ export default {
               show: false,
               position: "center",
             },
-            emphasis: {
-              label: {
-                show: true,
-                fontSize: "18",
-                fontWeight: "bold",
-              },
-            },
+            // emphasis: {
+            //   label: {
+            //     show: true,
+            //     fontSize: "18",
+            //     fontWeight: "bold",
+            //   },
+            // },
             labelLine: {
               show: false,
+            },
+            label:{
+              show: true,
+              fontSize:20,
+              color: "#000",
+              position: 'center',
+              formatter: () => `${total}\n总量`,
             },
             // data: [
             //   { value: 1048, name: "Search Engine" },

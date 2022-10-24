@@ -9,9 +9,9 @@
             <el-main>
               <!-- <Bread></Bread> -->
               <!-- <Tabs></Tabs> -->
-              <div class="bgc">
+              <!-- <div class="bgc"> -->
                 <router-view :key="key"></router-view>
-              </div>
+              <!-- </div> -->
             </el-main>
           </el-container>
         </el-container>

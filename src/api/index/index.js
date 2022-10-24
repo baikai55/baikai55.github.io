@@ -6,11 +6,11 @@ function getStatisticsTask() {
     method: "get",
   });
 }
-function getTaskList(data) {
-  return request({
-    url: "/",
-    method: "post",
-    data,
-  });
-}
-export { getStatisticsTask, getTaskList };
+// function getTaskList(data) {
+//   return request({
+//     url: "/",
+//     method: "post",
+//     data,
+//   });
+// }
+export { getStatisticsTask };
