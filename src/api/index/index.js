@@ -8,7 +8,7 @@ function getStatisticsTask() {
 }
 function getTaskList(data) {
   return request({
-    url: "/sheriff/api/bizTask/statisticsTask",
+    url: "/",
     method: "post",
     data,
   });

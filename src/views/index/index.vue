@@ -13,7 +13,7 @@
           </div>
         </div>
       </div>
-      <div class="scoreInfo">
+      <div class="scoreInfo" v-if="showRank">
         <div class="myScore">
           <div class="myScore_icon">
             <i class="el-icon-c-scale-to-original"></i>
@@ -58,7 +58,12 @@
       <div class="tasks">
         <div class="title">
           <div class="title_text">待办任务</div>
-          <div class="title_checkAll">查看全部</div>
+          <div
+            class="title_checkAll"
+            @click="jump"
+          >
+            查看全部
+          </div>
         </div>
         <div class="taskList">
           <div v-for="(item, index) in taskList" :key="index" class="taskCell">
@@ -75,12 +80,16 @@
 <script>
 import router from "@/router";
 import { getStatisticsTask } from "@/api/index/index.js";
+import avatar from "@/assets/images/avatar.png";
 
 export default {
   data() {
     return {
-      avatar:
-        "https://img2.woyaogexing.com/2020/06/19/02d268db09ff4e8e9608fd64adbbeed8!400x400.jpeg",
+      // avatar:
+      //   "https://img2.woyaogexing.com/2020/06/19/02d268db09ff4e8e9608fd64adbbeed8!400x400.jpeg",
+      avatar,
+
+      showRank: false,
       userName: "神秘人",
       policeCode: "124005793",
       position: "未知",
@@ -89,33 +98,12 @@ export default {
       taskList: [], // 本周待办任务list
     };
   },
-  async mounted() {
+  mounted() {
+    // 测试数据
     // this.makeTestData();
+
     // 获取数据 - 任务统计
-    let result = await this.getRealData();
-    let weekTaskData = [
-      { value: result.weekTaskCompleted, name: "已完成" },
-      { value: result.weekTaskInComplete, name: "未完成" },
-    ];
-    let monthTaskData = [
-      { value: result.monthTaskCompleted, name: "已完成" },
-      { value: result.monthTaskInComplete, name: "未完成" },
-    ];
-    let seasonTaskData = [
-      { value: result.quarterTaskCompleted, name: "已完成" },
-      { value: result.quarterTaskInComplete, name: "未完成" },
-    ];
-    this.drawCharts("weekTask", weekTaskData);
-    this.drawCharts("monthTask", monthTaskData);
-    this.drawCharts("seasonTask", seasonTaskData);
-
-    // 获取数据 - 用户信息
-    this.userName = result.loginName;
-    this.position = result.userType;
-
-    // 获取数据 - 待办任务
-    this.taskList = result.todoTask.splice(0, 3)
-
+    this.handleGetRealData();
   },
   methods: {
     makeTestData() {
@@ -136,6 +124,31 @@ export default {
           date: "2020-10-1",
         },
       ];
+    },
+    async handleGetRealData() {
+      let result = await this.getRealData();
+      let weekTaskData = [
+        { value: result.weekTaskCompleted, name: "已完成" },
+        { value: result.weekTaskInComplete, name: "未完成" },
+      ];
+      let monthTaskData = [
+        { value: result.monthTaskCompleted, name: "已完成" },
+        { value: result.monthTaskInComplete, name: "未完成" },
+      ];
+      let seasonTaskData = [
+        { value: result.quarterTaskCompleted, name: "已完成" },
+        { value: result.quarterTaskInComplete, name: "未完成" },
+      ];
+      this.drawCharts("weekTask", weekTaskData);
+      this.drawCharts("monthTask", monthTaskData);
+      this.drawCharts("seasonTask", seasonTaskData);
+
+      // 获取数据 - 用户信息
+      this.userName = result.loginName;
+      this.position = result.userType;
+
+      // 获取数据 - 待办任务
+      this.taskList = result.todoTask.splice(0, 2);
     },
     getRealData() {
       return new Promise((resolve, reject) => {
@@ -200,7 +213,14 @@ export default {
 
       // 绘制图表
       myChart.setOption(option);
+
+      // window.onresize = function () {
+      //   myChart.resize(); //myChart1.resize();    //若有多个图表变动，可多写
+      // };
     },
+    jump(){
+      router.push({ path: '/assessment/task' })
+    }
   },
 };
 </script>
@@ -211,7 +231,7 @@ $padding: 20px;
 .box {
   width: 100%;
   height: 100%;
-  background-color: #e0e0e0;
+  background-color: #f5f5fc;
   display: grid;
   grid-template-columns: 1fr 360px;
   grid-template-rows: 200px 1fr;
@@ -224,7 +244,7 @@ $padding: 20px;
 .headerInfo {
   grid-area: headerInfo;
   border-radius: 5px;
-  background-color: rgb(241, 241, 246);
+  background-color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -327,7 +347,7 @@ $padding: 20px;
 .bodyChart {
   grid-area: bodyChart;
   border-radius: 5px;
-  background-color: rgb(241, 241, 246);
+  background-color: #fff;
   padding-top: 20px;
   .label {
     font-size: 18px;
@@ -336,10 +356,12 @@ $padding: 20px;
   }
   .chartsBox {
     display: flex;
+    width: 100%;
+    // height: 80%;
   }
   .charts {
-    width: 300px;
-    height: 300px;
+    width: 100%;
+    height: 100%;
   }
   .chartsLabel {
     font-size: 14px;
@@ -349,7 +371,7 @@ $padding: 20px;
   .weekTask,
   .monthTask,
   .seasonTask {
-    width: 300px;
+    width: 33%;
     height: 300px;
   }
   .weekTask {
@@ -365,13 +387,13 @@ $padding: 20px;
 .sideContent {
   grid-area: sideContent;
   border-radius: 5px;
-  background-color: rgb(241, 241, 246);
+  background-color: #fff;
   padding: 10px;
   .date {
     width: 100%;
     // height: 50%;
-    ::v-deep .el-calendar{
-        background-color: rgba(255,255,255,0);
+    ::v-deep .el-calendar {
+      background-color: rgba(255, 255, 255, 0);
     }
     ::v-deep .el-calendar-table .el-calendar-day {
       height: 30px;
@@ -394,13 +416,16 @@ $padding: 20px;
       .title_checkAll {
         font-size: 12px;
         line-height: 24px;
-        color: #565151;
+        color: #999999;
+      }
+      .title_checkAll:hover {
+        cursor: pointer;
       }
     }
     .taskCell {
       margin: 5px;
       padding: 5px;
-      background-color: #fff;
+      background-color: #f9f9f9;
       .taskCell_type {
         font-size: 16px;
         font-weight: 600;
@@ -411,7 +436,7 @@ $padding: 20px;
       }
       .taskCell_date {
         font-size: 12px;
-        color: #8c8383;
+        color: #999999;
         // font-weight: 600;
       }
     }
