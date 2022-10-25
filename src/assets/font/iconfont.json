@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "32496009",
+      "name": "分数",
+      "font_class": "fenshu",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
       "icon_id": "32458304",
       "name": "任务管理",
       "font_class": "renwuguanli",

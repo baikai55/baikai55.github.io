@@ -113,7 +113,10 @@ const important = {
   path: "/assessment/important",
   component: () => import("@/views/assessment/important"),
 };
-
+const log = {
+  path: "/score/log",
+  component: () => import("@/views/score/log"),
+};
 const asyncRouetr = {
   "/system/dept": dept,
   "/system/user": user,
@@ -142,6 +145,7 @@ const asyncRouetr = {
   "/ranking/control": controlR,
   "/ranking/meanscore": meanscore,
   "/ranking/scorerank": scorerank,
+  "/score/log": log,
 };
 
 export default asyncRouetr;

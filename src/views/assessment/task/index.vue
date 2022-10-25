@@ -81,7 +81,7 @@
                     <template>
                         <el-form-item label="执行人" prop="executor">
                             <el-select v-model="formNew.executor" placeholder="请选择" filterable>
-                                <el-option v-for="item in userlist" :key="item.id" :label="item.realName"
+                                <el-option v-for="item in userListData" :key="item.id" :label="item.realName"
                                     :value="item.id">
                                 </el-option>
                             </el-select>
@@ -93,14 +93,11 @@
                             end-placeholder="结束日期" @change="timeChange">
                         </el-date-picker>
                     </el-form-item>
-
-
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="newParamsComfigCancel">取 消</el-button>
                 <el-button type="primary" @click="newParamsComfig('formNew')">确 定</el-button>
-
             </span>
         </el-dialog>
 
@@ -136,33 +133,40 @@
                             <img :src="item.fileUrl" alt="" v-for="item in checkTaskList.attachmentVoList"
                                 :key="item.businessId" width="100" @click="ImgClick(item.fileUrl)" />
                         </template>
+                        <template v-if="title != '详细' && title != '抽查'">
+                            <el-upload class="upload-demo" action="#" :http-request="upload" :on-remove="handleRemove"
+                                :file-list="fileList" list-type="picture" :on-success="successTask" multiple>
+                                <el-button size="small" type="primary">点击上传</el-button>
+                            </el-upload>
+                        </template>
                     </el-form-item>
-                    <div class="steps">
+
+                    <div class="steps" v-if="title != '办理' && title != '申诉'">
                         <el-form-item class="label" label="任务进度" prop="fileName"></el-form-item>
                         <el-steps :space="200" :active="checkTaskList.taskState" finish-status="success"
-                            style="width:100%;margin-left: 20px;">
+                            style="width: 100%; margin-left: 20px">
                             <el-step title="进行中"></el-step>
-                            <el-step title="待审核"></el-step>
-                            <el-step v-if="checkTaskList.taskType==1" title="待申诉"></el-step>
+                            <el-step title="已完成"></el-step>
+                            <el-step v-if="checkTaskList.taskType == 1" title="待申诉"></el-step>
                             <el-step title="完成"></el-step>
                         </el-steps>
                     </div>
-                    <template v-if="title!='详细'">
+                    <template v-if="title != '详细' && title != '办理' && title != '申诉'">
                         <el-form-item label="所扣分值" prop="score">
-                            <el-input v-model="checkTaskList.score">
-                            </el-input>
+                            <el-input v-model="checkTaskList.score"> </el-input>
                         </el-form-item>
                         <el-form-item label="考核备注" prop="checkRemake">
-                            <el-input type="textarea" v-model="checkTaskList.checkRemake">
-                            </el-input>
+                            <el-input type="textarea" v-model="checkTaskList.checkRemake"> </el-input>
                         </el-form-item>
                     </template>
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="checkTaskComfigCancel">取 消</el-button>
-                <el-button v-if="title=='详细'" type="primary" @click="checkTaskDivsi=false">确认</el-button>
-                <el-button v-if="title=='扣分'" type="primary" @click="checkTaskComfig">扣分</el-button>
+                <el-button v-if="title == '详细'" type="primary" @click="checkTaskDivsi = false">确认</el-button>
+                <el-button v-if="title == '抽查'" type="primary" @click="checkTaskComfig">扣分</el-button>
+                <el-button v-if="title == '办理'" type="primary" @click="submitTaskComfig">办理</el-button>
+                <el-button v-if="title == '申诉'" type="primary" @click="appealTaskComfig">申诉</el-button>
             </span>
         </el-dialog>
         <el-dialog :visible.sync="dialogVisibleImg">
@@ -178,14 +182,24 @@ import {
     getParamsList,
     del,
     deleteBatch,
-    update,
+    submitTask,
     getOne,
     checkTask,
     AppTaskCheckList,
+    checkTaskNew,
 } from "@/api/assessment/task";
 import { deptList } from "@/api/system/dept";
 import { userList } from "@/api/system/user";
+import { uploadAll } from "@/api/upload";
+import { mapState } from "vuex";
+import { createData } from "@/api/assessment/appeal";
+import { getUserTypeList } from "@/api/system/user.js";
+import request from "@/utils/request";
+import headers from "./tableConfig";
 export default {
+    computed: {
+        ...mapState(["userType"]),
+    },
     data() {
         return {
             dialogVisibleNew: false,
@@ -199,14 +213,11 @@ export default {
             date: [],
             title: "",
             formNew: {
-                bigTypeId: '',
-                smallTypeId: '',
-                taskTitle: '',
-                description: '',
-                startTime: '',
-                endTime: '',
-                otherScore: '',
-                taskState: 98
+                bigTypeId: "",
+                smallTypeId: "",
+                taskTitle: "",
+                description: "",
+                startTime: "",
             },
             deletelTemp: "",
             deleteAllTemp: [],
@@ -217,129 +228,132 @@ export default {
             deptlist: [],
             searchFrom: {
                 executor: "",
-                bigTypeId: ""
+                bigTypeId: "",
             },
             pagination: {
                 total: 0,
                 pageNum: 1,
                 pageSize: 10,
-                taskType: 0
+                taskType: 0,
             },
             table: {
                 tableData: [],
-                header: [
-                    { selection: true, width: "70px" },
-                    {
-                        prop: "bigTypeStr",
-                        label: "大类",
-                        minWidth: "120px",
-                    },
-                    {
-                        prop: "smallTypeStr", label: "小类", minWidth: "200px",
-                    },
-                    {
-                        //（0:待办｜1:待审核｜2:待申诉｜3:申诉待审核｜98:完成待抽查|99完成）
-                        prop: "taskState", label: "任务状态", minWidth: "130px", status: true,
-                        filters: (val) => {
-                            if (val == 0) {
-                                return "待办"
-                            } else if (val == 1) {
-                                return "待审核"
-                            } else if (val == 2) {
-                                return "待申诉"
-                            } else if (val == 3) {
-                                return "申诉待审核"
-                            }
-                            else if (val == 98) {
-                                return "完成待抽查"
-                            }
-                            else if (val == 99) {
-                                return "完成"
-                            }
-                        }
-                    },
-                    {
-                        prop: "executorStr",
-                        label: "办理警员",
-                        minWidth: "120px",
-                    },
-                    { prop: "completeTime", label: "完成时间", minWidth: "120px" },
-
-                    { prop: "score", label: "所扣分值", minWidth: "120px" },
-                    {
-                        prop: "caozuo",
-                        label: "操作",
-                        width: "160px",
-                        control: true,
-                        fixed: "right",
-                        tableOption: [
-                            { type: "text", label: "详细", size: "mini", methods: "update" },
-                            { type: "text", label: "扣分", size: "mini", methods: "check", disabled: (val) => val == 2 ? false : true },
-                            { type: "text", label: "删除", title: "确定删除吗？", size: "mini", methods: "delete", },
-                        ],
-                    },
-                ],
+                header: headers,
             },
-
+            fileList: [],
+            fileId: [],
+            userListData: [],
         };
     },
     created() {
         this.classList();
         this.getTable();
-        this.getdeptList();
+        // this.getdeptList();
         this.getuserList();
-        this.getLittleClass()
+        this.getLittleClass();
+        this.getUserList();
     },
     methods: {
+        getUserList() {
+            getUserTypeList("5").then((res) => {
+                if (res.errCode == 200) {
+                    this.userListData = res.result;
+                }
+            });
+        },
+        //shangchaun
+        upload(file) {
+            let filelist = new FormData();
+            //添加参数
+            console.log(file, "file");
+            filelist.append("files", file.file);
+            // filelist.append("name", file.filename);
+            request
+                .post("/sheriff/api/sysAttachment/plural/upload", filelist, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                })
+                .then((res) => {
+                    console.log(res, "res");
+                    const { id, fileUrl, fileOriginalName } = res.result[0];
+                    let temp = {
+                        name: fileOriginalName,
+                        id: id,
+                        url: fileUrl,
+                    };
+                    this.fileList.push(temp);
+                    this.fileId.push(id);
+                    console.log(temp, "temp");
+                });
+        },
+        handleRemove(row, index) {
+            // this.fileList.splice(index, 1);
+            console.log(row, index);
+        },
+        successTask(response, file, fileList) {
+            console.log(response, file, fileList, "response, file, fileList");
+        },
+        // 放大图片
         timeChange(val) {
-            let temp = val.map(item => {
-                let mouth = (item.getMonth() + 1) < 10 ? "0" + (item.getMonth() + 1) : (item.getMonth() + 1);
+            let temp = val.map((item) => {
+                let mouth =
+                    item.getMonth() + 1 < 10 ? "0" + (item.getMonth() + 1) : item.getMonth() + 1;
                 let day = item.getDate() < 10 ? "0" + item.getDate() : item.getDate();
                 let hour = item.getHours() < 10 ? "0" + item.getHours() : item.getHours();
                 let minute = item.getMinutes() < 10 ? "0" + item.getMinutes() : item.getMinutes();
                 let second = item.getSeconds() < 10 ? "0" + item.getSeconds() : item.getSeconds();
-                let formatTime2 = item.getFullYear() + "-" + mouth + "-" + day + " " + hour + ":" + minute + ":" + second;
-                return formatTime2
-            })
-            this.formNew.startTime = temp[0]
-            this.formNew.deadline = temp[1]
+                let formatTime2 =
+                    item.getFullYear() +
+                    "-" +
+                    mouth +
+                    "-" +
+                    day +
+                    " " +
+                    hour +
+                    ":" +
+                    minute +
+                    ":" +
+                    second;
+                return formatTime2;
+            });
+            this.formNew.startTime = temp[0];
+            this.formNew.deadline = temp[1];
         },
         bigClassChange(val) {
-            getLillteClass({ id: val }).then(res => {
-                console.log(res, '小类');
+            getLillteClass({ id: val }).then((res) => {
+                console.log(res, "小类");
                 this.littleClass = res.result;
-            })
+            });
         },
 
         //新增
         newParams() {
-            this.title = '新增'
-            this.dialogVisibleNew = true
-            this.resetForm()
+            this.title = "新增";
+            this.dialogVisibleNew = true;
+            this.resetForm();
         },
         // 新增-确认
         newParamsComfig(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    this.dialogVisibleNew = false
-                    addParams(this.formNew).then(res => {
-                        console.log(res)
-                        this.resetForm()
+                    this.dialogVisibleNew = false;
+                    addParams(this.formNew).then((res) => {
+                        console.log(res);
+                        this.resetForm();
                         if (res.errCode == 200) {
                             this.$message({
                                 message: `${res.errMsg}`,
-                                type: 'success'
+                                type: "success",
                             });
-                            this.getTable()
+                            this.getTable();
                         }
-                    })
+                    });
                 }
             });
         },
         // 新增-取消
         newParamsComfigCancel() {
-            this.dialogVisibleNew = false
-            this.resetForm()
+            this.dialogVisibleNew = false;
+            this.resetForm();
         },
         //图片放大
         ImgClick(val) {
@@ -350,9 +364,9 @@ export default {
 
         // 获取小类
         getLittleClass() {
-            getLillteClass({}).then(res => {
-                this.initLittleClass = res.result
-            })
+            getLillteClass({}).then((res) => {
+                this.initLittleClass = res.result;
+            });
         },
         // 机构
         getdeptList() {
@@ -362,10 +376,10 @@ export default {
         },
         getuserList() {
             userList({}).then((res) => {
-                let temp = res.result.filter(item => {
-                    return item.userType == 5
-                })
-                this.userlist = temp
+                let temp = res.result.filter((item) => {
+                    return item.userType == 5;
+                });
+                this.userlist = temp;
             });
         },
         reset() {
@@ -401,15 +415,89 @@ export default {
                 this.updateTable(val.row);
             } else if (val.methods == "check") {
                 this.checkTask(val.row);
+            } else if (val.methods == "submit") {
+                this.submitTaskCheck(val.row);
+            } else if (val.methods == "appeal") {
+                this.appealTask(val.row);
             }
         },
-        // 扣分
+        //申诉
+        appealTask(row) {
+            this.title = "申诉";
+            getOne(row.id, row.taskType).then((res) => {
+                console.log(res, "res");
+                if (res.errCode == 200) {
+                    this.checkTaskDivsi = true;
+                    this.checkTaskDisabed = false;
+                    this.checkTaskList = res.result;
+                    getLillteClass({ id: res.result.bigTypeId }).then((res) => {
+                        this.littleClass = res.result;
+                    });
+                }
+            });
+        },
+        //申诉-确认
+        appealTaskComfig() {
+            this.checkTaskDivsi = false;
+            const { id, description } = this.checkTaskList;
+            let temp = {
+                taskId: id,
+                appealReason: description,
+            };
+            createData(temp).then((res) => {
+                console.log(res);
+                if (res.errCode == 200) {
+                    this.$message({
+                        message: `${res.errMsg}`,
+                        type: "success",
+                    });
+                    this.getTable();
+                }
+            });
+        },
+        //办理
+        submitTaskCheck(row) {
+            this.title = "办理";
+            getOne(row.id, row.taskType).then((res) => {
+                console.log(res, "res");
+                if (res.errCode == 200) {
+                    this.checkTaskDivsi = true;
+                    this.checkTaskDisabed = false;
+                    this.checkTaskList = res.result;
+                    getLillteClass({ id: res.result.bigTypeId }).then((res) => {
+                        this.littleClass = res.result;
+                    });
+                }
+            });
+        },
+        //办理确认
+        submitTaskComfig() {
+            this.checkTaskDivsi = false;
+            const { id, description } = this.checkTaskList;
+            let temp = {
+                id,
+                taskExplain: description,
+                idList: this.fileId,
+            };
+            submitTask(temp).then((res) => {
+                console.log(res);
+                this.resetForm();
+                if (res.errCode == 200) {
+                    this.$message({
+                        message: `${res.errMsg}`,
+                        type: "success",
+                    });
+                    this.getTable();
+                }
+            });
+        },
+        // 抽查
         checkTask(val) {
-            this.title = "扣分";
+            this.title = "抽查";
             getOne(val.id, val.taskType).then((res) => {
                 if (res.errCode == 200) {
                     this.checkTaskDivsi = true;
-                    this.checkTaskDisabed = true
+                    this.checkTaskDisabed = true;
                     this.checkTaskList = res.result;
                     getLillteClass({ id: res.result.bigTypeId }).then((res) => {
                         this.littleClass = res.result;
@@ -421,15 +509,15 @@ export default {
             this.checkTaskDivsi = false;
             this.resetForm();
         },
-        //核验确认
+        //抽查确认
         checkTaskComfig() {
-            const { id, score, checkRemake } = this.checkTaskList
+            const { id, score, checkRemake } = this.checkTaskList;
             let temp = {
-                taskId: id,
+                id,
                 score,
-                checkRemake
-            }
-            AppTaskCheckList(temp).then((res) => {
+                otherScoreExplain: checkRemake,
+            };
+            checkTaskNew(temp).then((res) => {
                 if (res.errCode == 200) {
                     this.$message({
                         message: res.errMsg,
@@ -468,7 +556,7 @@ export default {
             getOne(val.id, val.taskType).then((res) => {
                 if (res.errCode == 200) {
                     this.checkTaskDivsi = true;
-                    this.checkTaskDisabed = true
+                    this.checkTaskDisabed = true;
                     this.checkTaskList = res.result;
                     getLillteClass({ id: res.result.bigTypeId }).then((res) => {
                         this.littleClass = res.result;
@@ -492,7 +580,6 @@ export default {
         // 获取表格数据
         getTable() {
             getParamsList(this.pagination).then((res) => {
-
                 let temp = res.result.records.map((item) => {
                     let tempData = {
                         id: item.id,
@@ -505,7 +592,7 @@ export default {
                         taskState: item.taskState,
                         caozuo: item.taskState,
                         taskType: item.taskType,
-                        taskState: item.taskState
+                        taskState: item.taskState,
                     };
                     return tempData;
                 });

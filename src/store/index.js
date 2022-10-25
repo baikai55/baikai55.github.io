@@ -8,7 +8,7 @@ export default new Vuex.Store({
     userName: localStorage.getItem("userName") || "123456464",
     userRole: JSON.parse(localStorage.getItem("userRole") || "[]"),
     token: localStorage.getItem("token") || "",
-    
+    userType: localStorage.getItem("userType") || "",
   },
   getters: {},
   mutations: {
@@ -23,6 +23,10 @@ export default new Vuex.Store({
     set_userRole(state, userRole) {
       state.userRole = userRole;
       localStorage.setItem("userRole", JSON.stringify(userRole));
+    },
+    set_userType(state, userType) {
+      state.userType = userType;
+      localStorage.setItem("userType", JSON.stringify(userType));
     },
   },
   actions: {},

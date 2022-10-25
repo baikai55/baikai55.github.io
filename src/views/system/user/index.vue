@@ -100,7 +100,7 @@
 
 <script>
 import {
-    createData, getTableList, update, del, deleteBatch, getOne, getType
+    createData, getTableList, update, del, deleteBatch, getOne, getType, getAllType
 } from '@/api/system/user';
 import { deptList } from '@/api/system/dept';
 import { getRoleList } from '@/api/system/role';
@@ -132,6 +132,7 @@ export default {
                 ],
             },
             //id  roleName
+            userAllTypeData: [],
             userTypeData: [
                 // // 用户类型(0普通｜1管理员|2机构|3民警|4辅警|99系统管理员)
                 // { id: 0, name: '普通' },
@@ -167,8 +168,8 @@ export default {
                     {
                         prop: "userType", label: "用户类型", width: "120px", status: true, filters: (val) => {
                             let temp = ''
-                            this.userTypeData.forEach(element => {
-                                return element.id == val ? temp = element.name : val
+                            this.userAllTypeData.forEach(element => {
+                                return element.id == val ? temp = element.type : val
                             });
                             return temp
                         }
@@ -178,8 +179,8 @@ export default {
                     {
                         prop: "", label: "操作", width: "120px", control: true, fixed: 'right',
                         tableOption: [
-                            { type: "text", label: "修改", size: "mini", methods: "update", },
-                            { type: "text", label: "删除", title: "确定删除吗？", size: "mini", methods: "delete", },
+                            { type: "text", label: "修改", size: "mini", methods: "update", role: (userType) => userType == 5 ? false : true, },
+                            { type: "text", label: "删除", title: "确定删除吗？", size: "mini", methods: "delete", role: (userType) => userType == 5 ? false : true, },
                         ]
                     }
                 ]
@@ -193,16 +194,28 @@ export default {
     created() {
         this.getTable()
         this.getTypeData()
+        this.getAllTypeData()
     },
     methods: {
+        //获取所有类型
+        getAllTypeData() {
+            getAllType().then(res => {
+                console.log(res);
+                if (res.errCode == 200) {
+                    this.userAllTypeData = res.result
+                }
+            })
+        },
         // 用户类型数据
         getTypeData() {
             getType().then(res => {
                 console.log(res, 'res.result');
                 let temp = res.result.map((item, index) => {
+                    let temp = Object.keys(item).toString()
+                    let temp2 = Object.values(item).toString()
                     return {
-                        id: index,
-                        name: item
+                        id: Number(temp),
+                        name: temp2
                     }
                 })
                 this.userTypeData = temp

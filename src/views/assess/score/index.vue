@@ -85,8 +85,8 @@
                     </el-form-item>
                     <el-form-item label="任务类型" prop="taskType">
                         <el-radio-group v-model="formNew.taskType">
-                            <el-radio label="1">自动下发</el-radio>
-                            <el-radio label="0">手工录入</el-radio>
+                            <el-radio label="0">自动下发</el-radio>
+                            <el-radio label="1">手工录入</el-radio>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="运算类型" prop="operationType">
@@ -95,9 +95,9 @@
                             <el-radio label="0">-</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item label="考核用户" prop="scoreValue">
-                        <el-select v-model="formNew.parentId" placeholder="请选择" multiple filterable>
-                            <el-option v-for="item in optionsNew" :key="item.value" :label="item.label"
+                    <el-form-item label="考核用户" prop="checkerList">
+                        <el-select v-model="formNew.checkerList" placeholder="请选择" multiple filterable>
+                            <el-option v-for="item in userListData" :key="item.value" :label="item.label"
                                 :value="item.value">
                             </el-option>
                         </el-select>
@@ -119,7 +119,12 @@
 
 <script>
 import { getClassList, addParams, getParamsList, del, deleteBatch, update, getOne } from '@/api/assess/score';
+import { getUserTypeList } from '@/api/system/user.js'
+import { mapState } from 'vuex';
 export default {
+    computed: {
+        ...mapState(['userType'])
+    },
     data() {
         return {
             title: '',
@@ -137,9 +142,11 @@ export default {
                 "parentId": '',
                 "total": '',
                 taskType: '',
+                checkerList: []
             },
 
             optionsNew: [],
+            userListData: [],
             searchFrom: {
                 paramGrade: '',
             },
@@ -159,9 +166,11 @@ export default {
                     {
                         prop: "operationType", label: "运算类型", width: "120px", status: true, filters: (val) => val === '1' ? '+' : val === '0' ? '-' : val
                     },
+                    { prop: "taskType", label: "任务类型", minWidth: "120px", status: true, filters: (val) => val == 0 ? '自动下发' : val == 1 ? '手工任务' : val },
                     {
                         prop: "paramGrade", label: "参数等级", width: "110px", status: true, filters: (val) => val == 1 ? '小类' : '大类'
                     },
+                    { prop: "checkerListStr", label: "考核机构", minWidth: "150px" },
                     {
                         prop: "parentId", label: "所属大类", minWidth: "120px", status: true, filters: (val) => {
                             let name = '';
@@ -174,12 +183,11 @@ export default {
                         }
                     },
                     { prop: "remark", label: "其他备注", minWidth: "120px" },
-
                     {
                         prop: "", label: "操作", width: "120px", control: true, fixed: 'right',
                         tableOption: [
-                            { type: "text", label: "修改", size: "mini", methods: "update", },
-                            { type: "text", label: "删除", title: "确定删除吗？", size: "mini", methods: "delete", },
+                            { type: "text", label: "修改", size: "mini", methods: "update", role: (userType) => userType == 5 ? true : true, },
+                            { type: "text", label: "删除", title: "确定删除吗？", size: "mini", methods: "delete", role: (userType) => userType == 5 ? true : true, },
                         ]
                     }
                 ]
@@ -189,8 +197,22 @@ export default {
     created() {
         this.classList()
         this.getTable()
+        this.getUserList()
     },
     methods: {
+        getUserList() {
+            getUserTypeList('3').then(res => {
+                if (res.errCode == 200) {
+                    let temp = res.result.map(item => {
+                        return {
+                            value: item.id,
+                            label: item.realName,
+                        }
+                    })
+                    this.userListData = temp
+                }
+            })
+        },
         reset() {
             this.searchFrom = {
                 paramGrade: '',
@@ -278,15 +300,15 @@ export default {
             this.title = '新增'
             this.dialogVisibleNew = true
         },
-        // 新增-确认
+        // 新增\修改=确认
         newParamsComfig() {
             this.dialogVisibleNew = false
-            const { typeName, sequence, scoreValue, operationType, paramGrade, parentId, remark, id, total, taskType } = this.formNew
+            const { typeName, sequence, scoreValue, operationType, paramGrade, parentId, remark, id, total, taskType, checkerList } = this.formNew
             let bigClass = {
-                typeName, sequence, scoreValue, operationType, paramGrade, remark, id, total, taskType
+                typeName, sequence, scoreValue, operationType, paramGrade, remark, id, total, taskType, checkerList
             }
             let littleClass = {
-                typeName, sequence, scoreValue, operationType, paramGrade, parentId, remark, id, total, taskType
+                typeName, sequence, scoreValue, operationType, paramGrade, parentId, remark, id, total, taskType, checkerList
             }
             let temp = paramGrade == 0 ? bigClass : littleClass
             if (id == undefined) {

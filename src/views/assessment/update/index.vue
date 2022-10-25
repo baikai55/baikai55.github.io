@@ -89,7 +89,8 @@ import {
     update,
     getOne,
     checkTask as koufen,
-    changeStatus
+    changeStatus,
+    deductEnter
 } from "@/api/assessment/task";
 export default {
     data() {
@@ -122,21 +123,6 @@ export default {
                 tableData: [],
                 header: [
                     { selection: true, width: "70px" },
-                    // {
-                    //     prop: "bigTypeId",
-                    //     label: "大类",
-                    //     minWidth: "120px",
-                    //     status: true,
-                    //     filters: (val) => {
-                    //         let name = "";
-                    //         this.optionsNew.forEach((item) => {
-                    //             if (item.value == val) {
-                    //                 name = item.label;
-                    //             }
-                    //         });
-                    //         return name;
-                    //     },
-                    // },
                     { prop: "bigTypeStr", label: "大类", minWidth: "120px" },
                     { prop: "smallTypeStr", label: "小类", minWidth: "180px" },
                     { prop: "executorStr", label: "警员", minWidth: "120px" },
@@ -147,9 +133,9 @@ export default {
                         control: true,
                         fixed: "right",
                         tableOption: [
-                            { type: "primary", label: "详情", size: "mini", methods: "detail", },
-                            { type: "danger", label: "扣分", size: "mini", methods: "check", disabled: (val) => val == 2 ? true : val == 99 ? true : false },
-                            { type: "success", label: "不扣分", title: "确定不扣分吗？", size: "mini", methods: "delete", disabled: (val) => val == 2 ? true : val == 99 ? true : false },
+                            { type: "primary", label: "详情", size: "mini", methods: "detail", role: (userType) => userType == 5 ? true : true },
+                            { type: "danger", label: "扣分", size: "mini", methods: "check", role: (userType) => userType == 5 ? true : true, disabled: (val) => val == 2 ? true : val == 99 ? true : false },
+                            { type: "success", label: "不扣分", title: "确定不扣分吗？", role: (userType) => userType == 5 ? true : true, size: "mini", methods: "delete", disabled: (val) => val == 2 ? true : val == 99 ? true : false },
                         ]
                     }
                 ]
@@ -278,11 +264,11 @@ export default {
         newParamsComfig() {
             const { id, score, describe } = this.formNew
             let temp = {
-                taskId: id,
-                checkRemake: describe,
+                id,
+                otherScoreExplain: describe,
                 score
             }
-            koufen(temp).then((res) => {
+            deductEnter(temp).then((res) => {
                 if (res.errCode == 200) {
                     this.$message({
                         message: res.errMsg,

@@ -42,9 +42,6 @@
 import router from '@/router'
 import { mapState } from 'vuex'
 import { changePassword } from '@/api/login'
-import store from '@/store';
-import { routerBase } from '@/api/login';
-import { initAsyncRouter } from '@/router';
 export default {
     computed: {
         ...mapState(['userName'])

@@ -27,7 +27,6 @@
                 <p>申诉列表</p>
                 <div class="user-control-btn">
                     <div>
-                        <el-button id="newstaff" icon="el-icon-plus" size="small" @click="newParams">新增</el-button>
                         <template>
                             <el-button v-if="deleteAllTemp.length <= 0" icon="el-icon-delete" size="small"
                                 @click="deleteAll">批量删除
@@ -53,32 +52,46 @@
         <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
             <div class="content-dia">
                 <el-form ref="formNew" :model="formNew" label-width="100px" :rules="rules">
-                    <el-form-item label="申诉审核人" prop="appealChecker">
-                        <el-input placeholder="请输入内容" v-model="formNew.appealChecker">
-                        </el-input>
+                    <el-form-item label="申诉人" prop="appealUserId">
+                        <el-select v-model="formNew.appealUserId" placeholder="请选择" disabled>
+                            <el-option v-for="item in userListData" :key="item.id" :label="item.realName"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="申诉理由" prop="appealReason">
-                        <el-input placeholder="请输入内容" v-model="formNew.appealReason">
+                        <el-input v-model="formNew.appealReason" disabled>
                         </el-input>
                     </el-form-item>
-                    <el-form-item label="申诉状态" prop="appealState">
-                        <el-radio-group v-model="formNew.appealState">
-                            <el-radio :label="0">待审核</el-radio>
-                            <el-radio :label="1">已审核</el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                    <el-form-item label="申诉人" prop="appealUserId">
-                        <el-input v-model="formNew.appealUserId" placeholder="请输入内容"></el-input>
+
+                    <el-form-item label="申诉审核人" prop="appealChecker">
+                        <el-select v-model="formNew.appealChecker" placeholder="请选择" disabled>
+                            <el-option v-for="item in userListData" :key="item.id" :label="item.realName"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="附件" prop="attachmentId">
-
                     </el-form-item>
+
+                    <template v-if="title=='处理'">
+                        <el-form-item label="审核描述" prop="checkRemark">
+                            <el-input v-model="formNew.checkRemark">
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item label="申诉结果" prop="checkResult">
+                            <el-radio-group v-model="formNew.checkResult">
+                                <el-radio :label="0">通过</el-radio>
+                                <el-radio :label="1">驳回</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                    </template>
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="newParamsComfigCancel">取 消</el-button>
-                <el-button v-if="title=='新增'" type="primary" @click="newParamsComfig('formNew')">确 定</el-button>
-                <el-button v-else type="primary" @click="updateComfig">确 定</el-button>
+                <el-button v-if="title=='处理'" type="primary" @click="updateComfig">确 定</el-button>
+                <el-button v-else type="primary" @click="dialogVisibleNew=false">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -87,6 +100,7 @@
 <script>
 import { createData, getTableList, update, del, deleteBatch, getOne, } from '@/api/assessment/appeal';
 import { deptList } from '@/api/system/dept';
+import { userList } from '@/api/system/user';
 import { getRoleList } from '@/api/system/role';
 export default {
     data() {
@@ -99,26 +113,18 @@ export default {
             formNew: {
                 "appealChecker": null,
                 "appealReason": "",
-                "appealState": null,
+                "checkResult": null,
                 "appealTime": "",
                 "appealUserId": null,
                 "attachmentId": null,
+                checkRemark: '',
             },
             rules: {
                 organizationId: [
                     { required: true, message: '请选择机构', trigger: 'blur' },
                 ],
             },
-            //id  roleName
-            userTypeData: [
-                // // 用户类型(0普通｜1管理员|2机构|3民警|4辅警|99系统管理员)
-                // { id: 0, name: '普通' },
-                // { id: 1, name: '管理员' },
-                // { id: 2, name: '机构' },
-                // { id: 3, name: '民警' },
-                // { id: 4, name: '辅警' },
-                // { id: 99, name: '系统管理员' },
-            ],
+            userTypeData: [],
             optionsNew: [],
             queryParams: {
                 realName: "",
@@ -140,32 +146,62 @@ export default {
                 tableData: [],
                 header: [
                     { selection: true, width: "70px" },
-                    { prop: "sex", label: "申诉任务名称", minWidth: "120px" },
-                    { prop: "appealUserId", label: "申诉人", minWidth: "120px" },
-                    { prop: "appealReason", label: "申诉理由", minWidth: "120px" },
-                    { prop: "appealState", label: "申诉状态", width: "120px", status: true, filter: (val) => val == 0 ? '待审核' : '已审核' },
-                    { prop: "createTime", label: "申诉时间", width: "180px" },
-                    { prop: "appealChecker", label: "申诉审核人", minWidth: "120px" },
+                    { prop: "taskId", label: "申诉任务名称", minWidth: "120px" },
                     {
-                        prop: "", label: "操作", width: "120px", control: true, fixed: 'right',
+                        prop: "appealUserId", label: "申诉人", minWidth: "120px", status: true, filters: (val) => {
+                            let temp = ''
+                            this.userListData.forEach(element => {
+                                return element.id == val ? temp = element.realName : val
+                            });
+                            return temp
+                        }
+                    },
+                    { prop: "appealReason", label: "申诉理由", minWidth: "120px" },
+                    { prop: "appealState", label: "申诉状态", width: "120px", status: true, filters: (val) => val == 0 ? '待审核' : '已审核' },
+                    { prop: "createTime", label: "申诉时间", width: "180px" },
+                    {
+                        prop: "appealChecker", label: "申诉审核人", minWidth: "120px", status: true, filters: (val) => {
+                            let temp = ''
+                            this.userListData.forEach(element => {
+                                return element.id == val ? temp = element.realName : val
+                            });
+                            return temp
+                        }
+                    },
+                    {
+                        prop: "", label: "操作", control: true, fixed: 'right',
                         tableOption: [
-                            { type: "text", label: "申诉", size: "mini", methods: "update", },
-                            { type: "text", label: "删除", title: "确定删除吗？", size: "mini", methods: "delete", },
+                            {
+                                type: "text",
+                                label: "详细",
+                                size: "mini",
+                                role: (userType) => (userType == 5 ? true : true),
+                                methods: "details",
+                            },
+                            { type: "text", label: "处理", size: "mini", methods: "update", role: (userType) => userType == 5 ? true : true },
+                            { type: "text", label: "删除", title: "确定删除吗？", size: "mini", methods: "delete", role: (userType) => userType == 5 ? false : true },
                         ]
                     }
                 ]
-            }
+            },
+            userListData: [],
+
         };
     },
     mounted() {
-        this.getdeptlist()
+        // this.getdeptlist()
         this.getRole()
     },
     created() {
         this.getTable()
+        this.getuserList()
     },
     methods: {
-
+        getuserList() {
+            userList({}).then(res => {
+                this.userListData = res.result
+            })
+        },
         //选择角色
         changeRole(val) {
             this.formNew.roleIds = val
@@ -212,7 +248,19 @@ export default {
                 this.deletelTemp = val.row;
             } else if (val.methods == 'update') {
                 this.updateTable(val.row)
+            } else if (val.methods == 'details') {
+                this.details(val.row)
             }
+        },
+        //详细
+        details(val) {
+            this.title = "详细";
+            getOne(val.id).then(res => {
+                if (res.errCode == 200) {
+                    this.dialogVisibleNew = true;
+                    this.formNew = res.result
+                }
+            })
         },
         //确认删除
         confirmDel() {
@@ -229,12 +277,11 @@ export default {
                 this.getTable()
             })
         },
-        //修改
+        //处理
         updateTable(val) {
-            this.title = '修改';
+            this.title = '处理';
             getOne(val.id).then(res => {
                 if (res.errCode == 200) {
-                    console.log('user', res.result)
                     this.formNew = res.result
                     this.dialogVisibleNew = true;
                 }

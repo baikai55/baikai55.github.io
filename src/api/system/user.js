@@ -54,6 +54,18 @@ function getType() {
     method: "get",
   });
 }
+function getAllType() {
+  return request({
+    url: "/sheriff/api/sysUser/getAllUserType",
+    method: "get",
+  });
+}
+function getUserTypeList(data) {
+  return request({
+    url: "/sheriff/api/sysUser/listByType/" + data,
+    method: "get",
+  });
+}
 export {
   createData,
   getTableList,
@@ -63,4 +75,6 @@ export {
   getOne,
   userList,
   getType,
+  getAllType,
+  getUserTypeList
 };

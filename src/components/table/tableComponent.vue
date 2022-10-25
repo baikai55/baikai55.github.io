@@ -52,33 +52,47 @@
           </el-table-column>
         </template>
         <template v-else-if="item.control">
-          <el-table-column :prop="item.prop" :label="item.label" :min-width="item.tableOption.length*60+'px'"
+          <el-table-column :prop="item.prop" :label="item.label" :min-width="item.tableOption.length*55+'px'"
             :width="item.width" :fixed="item.fixed" :key="item.prop" align="center">
             <!-- 右侧操作 -->
             <template slot-scope="scope">
               <template v-for="(btn, ind) in item.tableOption">
                 <template v-if="btn.title">
-                  <el-popconfirm v-if="changeDisabled(scope.row[item.prop],btn.disabled)" :title="btn.title"
-                    :key="btn.label" @confirm="confirmDel" @cancel="cancelDel">
+                  <el-popconfirm
+                    v-if="changeDisabled(scope.row[item.prop],btn.disabled) &&changeDisabled(userType,btn.role)"
+                    :title="btn.title" :key="btn.label" @confirm="confirmDel" @cancel="cancelDel">
                     <el-button slot="reference" :type="btn.type" :size="btn.size"
                       @click="handButton(btn.methods, scope.row, scope.$index)" disabled>
                       {{btn.label}}
                     </el-button>
                   </el-popconfirm>
-                  <el-popconfirm v-else :title="btn.title" :key="ind" @confirm="confirmDel" @cancel="cancelDel">
+                  <el-popconfirm v-else-if="changeDisabled(userType,btn.role)" :title="btn.title" :key="ind"
+                    @confirm="confirmDel" @cancel="cancelDel">
                     <el-button slot="reference" :type="btn.type" :size="btn.size"
-                      @click="handButton(btn.methods, scope.row, scope.$index)">{{btn.label}}
+                      @click="handButton(btn.methods, scope.row, scope.$index)">
+                      {{btn.label}}
                     </el-button>
                   </el-popconfirm>
+                  <!-- <el-popconfirm v-else :title="btn.title" :key="btn.title"
+                    @confirm="confirmDel" @cancel="cancelDel">
+                    <el-button slot="reference" :type="btn.type" :size="btn.size"
+                      @click="handButton(btn.methods, scope.row, scope.$index)">
+                      {{btn.label}}{{changeDisabled(userType,btn.role)}}222
+                    </el-button>
+                  </el-popconfirm> -->
                 </template>
-
                 <template v-else>
-                  <el-button v-if="changeDisabled(scope.row[item.prop],btn.disabled)" :key="ind" :type="btn.type"
-                    :size="btn.size" @click="handButton(btn.methods, scope.row, scope.$index)" disabled>
+                  <el-button v-if="changeDisabled(scope.row[item.prop],btn.disabled)&&changeDisabled(userType,btn.role)"
+                    :key="ind" :type="btn.type" :size="btn.size"
+                    @click="handButton(btn.methods, scope.row, scope.$index)" disabled>
                     {{ btn.label }}
                   </el-button>
-                  <el-button v-else :key="btn.label" :type="btn.type" :size="btn.size"
+                  <!-- <el-button v-if="changeDisabled(userType,btn.role)" :key="btn.label" :type="btn.type" :size="btn.size"
                     @click="handButton(btn.methods, scope.row, scope.$index)">
+                    {{ btn.label }}
+                  </el-button> -->
+                  <el-button v-else-if="changeDisabled(userType,btn.role)" :key="btn.label" :type="btn.type"
+                    :size="btn.size" @click="handButton(btn.methods, scope.row, scope.$index)">
                     {{ btn.label }}
                   </el-button>
                 </template>
@@ -99,6 +113,7 @@
 
 <script>
 import "@/assets/css/table.css";
+import { mapState } from 'vuex';
 export default {
   /**
    * 表格接收参数      类型          例                          备注
@@ -146,10 +161,12 @@ export default {
 
   filters: {
     changeStatus(val, func) {
+      // console.log('val',typeof func === "function");
       return typeof func === "function" ? func(val) : val;
     },
   },
   computed: {
+    ...mapState(['userType']),
     /* 获取表格数据 */
     tableHeightComputed() {
       return this.tableHeight - this.itemHeaderHeight;

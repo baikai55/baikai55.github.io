@@ -93,6 +93,7 @@ export default {
                             this.remember == true ? this.remberme() : this.removeRember();
                             store.commit('set_token', res.result.token);
                             store.commit('set_userName', res.result.username);
+                            store.commit('set_userType', res.result.user.userType);
                             routerBase().then(res => {
                                 this.loading = false;
                                 console.log(res.result, 'role');

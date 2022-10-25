@@ -29,9 +29,19 @@
         </div> -->
         <div class="table-control-main">
             <div class="m_text">
-                <p>排名统计</p>
+                <p>分数记录列表</p>
                 <div class="user-control-btn">
-                    
+                    <div>
+                        <template>
+                            <el-button v-if="deleteAllTemp.length <= 0" icon="el-icon-delete" size="small"
+                                @click="deleteAll">批量删除
+                            </el-button>
+                            <el-popconfirm v-else title="确认删除选中的数据？" @confirm="confirmDelAll">
+                                <el-button slot="reference" id="deleteAll" icon="el-icon-delete" size="small">批量删除
+                                </el-button>
+                            </el-popconfirm>
+                        </template>
+                    </div>
                 </div>
             </div>
         </div>
@@ -177,7 +187,8 @@ export default {
                 total: 0,
                 pageNum: 1,
                 pageSize: 10,
-                taskType: 0,
+                taskType: 1,
+                taskState: 2,
             },
             table: {
                 tableData: [],

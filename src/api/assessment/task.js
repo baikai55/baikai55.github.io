@@ -54,13 +54,39 @@ function AppTaskCheckList(data) {
     data,
   });
 }
-function changeStatus(data){
+function changeStatus(data) {
   return request({
-    url: '/sheriff/api/bizTaskCheck/changeTaskStatusFinished',
-    method: 'post',
+    url: "/sheriff/api/bizTaskCheck/changeTaskStatusFinished",
+    method: "post",
     data,
-  })
+  });
 }
+
+//办理
+function submitTask(data) {
+  return request({
+    url: "/sheriff/api/bizTask/submitTask",
+    method: "post",
+    data,
+  });
+}
+//抽查
+function checkTaskNew(data) {
+  return request({
+    url: "/sheriff/api/bizTask/deductCheck",
+    method: "post",
+    data,
+  });
+}
+//手工扣分
+function deductEnter(data) {
+  return request({
+    url: "/sheriff/api/bizTask/deductEnter",
+    method: "post",
+    data,
+  });
+}
+
 export {
   addParams,
   getParamsList,
@@ -70,5 +96,8 @@ export {
   getOne,
   checkTask,
   AppTaskCheckList,
-  changeStatus
+  changeStatus,
+  submitTask,
+  checkTaskNew,
+  deductEnter
 };

@@ -4,8 +4,8 @@ import router from "../router";
 import nprogress from "nprogress";
 
 let request = axios.create({
-  // baseURL: window.global_url.baseURL,
-  baseURL: "http://192.168.40.148:18099/",
+  baseURL: window.global_url.baseURL,
+  // baseURL: "http://192.168.40.148:18099/",
   // baseURL: "http://192.168.107.83:18099/",
   // baseURL: "/",
   timeout: 5000,

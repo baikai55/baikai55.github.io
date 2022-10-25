@@ -279,7 +279,7 @@ export default {
         this.$nextTick(() => {
             let clientHeight = document.documentElement.clientHeight;
             let itemHeaderHeight =
-                this.$refs["table"].$el.getBoundingClientRect().top + 33;
+                this.$refs["table"].$el.getBoundingClientRect().top + 43;
             this.tableHeight = clientHeight - itemHeaderHeight;
         });
     },
@@ -287,7 +287,7 @@ export default {
         //高度监听
         resize() {
             let itemheight = document.documentElement.clientHeight;
-            let boundingheight = this.$refs["table"].$el.getBoundingClientRect().top + 33;
+            let boundingheight = this.$refs["table"].$el.getBoundingClientRect().top + 43;
             this.tableHeight = itemheight - boundingheight;
         },
         /** 查询字典类型列表 */
@@ -492,6 +492,7 @@ export default {
 
 .el-pagination {
     text-align: center;
+    padding-bottom: 10px;
 }
 
 .pagination {
