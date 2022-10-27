@@ -1,8 +1,7 @@
 <template>
   <div class="table-content" ref="content">
-    <el-table :data="
-      table.tableData
-    " empty-text="暂无数据~" border ref="table" :height="tableHeightComputed" @select="select" @select-all="selectAll">
+    <el-table :data="table.tableData" empty-text="暂无数据~" border ref="table" :height="tableHeightComputed"
+      @select="select" @select-all="selectAll">
       <template v-for="(item, index) in table.header">
         <template v-if="item.selection">
           <el-table-column type="selection" :width="item.width" :min-width="item.minWidth" :key="index" align="center">
@@ -25,7 +24,8 @@
           :width="item.width" :fixed="item.fixed" :key="item.prop" align="center">
           <!-- 状态渲染 0-n -->
           <template slot-scope="scope">
-            <span>{{ scope.row[item.prop] | changeStatus(item.filters) }}</span>
+            <div :style="`color:${changeDisabled(scope.row[item.prop],item.bgc)};`">{{ scope.row[item.prop] |
+            changeStatus(item.filters) }}</div>
           </template>
         </el-table-column>
         <template v-else-if="item.color">

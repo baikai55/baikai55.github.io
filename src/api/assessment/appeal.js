@@ -48,5 +48,21 @@ function userList(data) {
     data,
   });
 }
+function checkAppeal(data) {
+  return request({
+    url: "/sheriff/api/bizTaskAppeal/checkAppeal",
+    method: "post",
+    data,
+  });
+}
 
-export { createData, getTableList, update, del, deleteBatch, getOne, userList };
+export {
+  createData,
+  getTableList,
+  update,
+  del,
+  deleteBatch,
+  getOne,
+  userList,
+  checkAppeal,
+};

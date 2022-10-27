@@ -31,7 +31,7 @@
             <div class="m_text">
                 <p>排名统计</p>
                 <div class="user-control-btn">
-                    
+
                 </div>
             </div>
         </div>
@@ -139,6 +139,7 @@ import { createData } from "@/api/assessment/appeal";
 import { getUserTypeList } from "@/api/system/user.js";
 import request from "@/utils/request";
 import headers from "./tableConfig";
+import { getData } from '@/api/ranking/control'
 export default {
     computed: {
         ...mapState(["userType"]),
@@ -177,7 +178,6 @@ export default {
                 total: 0,
                 pageNum: 1,
                 pageSize: 10,
-                taskType: 0,
             },
             table: {
                 tableData: [],
@@ -367,24 +367,8 @@ export default {
         },
         // 获取表格数据
         getTable() {
-            getParamsList(this.pagination).then((res) => {
-                let temp = res.result.records.map((item) => {
-                    let tempData = {
-                        id: item.id,
-                        bigTypeStr: item.bigTypeStr,
-                        smallTypeStr: item.smallTypeStr,
-                        taskState: item.taskState,
-                        executorStr: item.executorStr,
-                        completeTime: item.completeTime,
-                        score: item.score,
-                        taskState: item.taskState,
-                        caozuo: item.taskState,
-                        taskType: item.taskType,
-                        taskState: item.taskState,
-                    };
-                    return tempData;
-                });
-                this.table.tableData = res.result.records;
+            getData(this.pagination).then((res) => {
+                this.table.tableData = res.result.result;
                 this.pagination.total = res.result.total;
             });
         },

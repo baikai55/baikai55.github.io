@@ -6,7 +6,7 @@ import nprogress from "nprogress";
 let request = axios.create({
   baseURL: window.global_url.baseURL,
   // baseURL: "http://192.168.40.148:18099/",
-  // baseURL: "http://192.168.107.83:18099/",
+  // baseURL: "http://41.244.49.125:49090/",
   // baseURL: "/",
   timeout: 5000,
 });

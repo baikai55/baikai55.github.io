@@ -17,14 +17,11 @@ let headers = [
     minWidth: "130px",
     status: true,
     filters: (val) => {
+      //0:进行中｜1待办理｜98:完成待抽查｜99完成
       if (val == 0) {
-        return "待办";
+        return "进行中";
       } else if (val == 1) {
-        return "待审核";
-      } else if (val == 2) {
-        return "待申诉";
-      } else if (val == 3) {
-        return "申诉待审核";
+        return "待办理";
       } else if (val == 98) {
         return "完成待抽查";
       } else if (val == 99) {
@@ -37,6 +34,14 @@ let headers = [
     label: "办理警员",
     minWidth: "120px",
   },
+  {
+    prop: "checkerStr",
+    label: "审核人",
+    minWidth: "120px",
+  },
+
+  { prop: "startTime", label: "开始时间", minWidth: "120px" },
+  { prop: "deadline", label: "结束时间", minWidth: "120px" },
   { prop: "completeTime", label: "完成时间", minWidth: "120px" },
 
   { prop: "score", label: "所扣分值", minWidth: "120px" },
@@ -75,7 +80,7 @@ let headers = [
             ? false
             : true,
         methods: "submit",
-        disabled: (val) => (val == 2 ? false : true),
+        disabled: (val) => (val == 2 ? false : val == 1 ? false : true),
       },
       // {
       //   type: "text",

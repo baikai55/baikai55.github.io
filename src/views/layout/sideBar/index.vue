@@ -3,7 +3,7 @@
   <el-aside width="210px" class="a-side">
     <el-menu class="el-menu-vertical-demo" background-color="transparent" :router="true" :default-active="key">
       <el-menu-item index="/">
-        <i class="el-icon-s-home"></i>
+        <i class="iconfont icon-shouye" style="margin-right:10px"></i>
         <span>首页</span>
       </el-menu-item>
       <template v-for="item in userRole">

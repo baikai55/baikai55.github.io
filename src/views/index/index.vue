@@ -408,7 +408,7 @@ $padding: 20px;
   }
   .tasks {
     width: 100%;
-    height: 50%;
+    height: 48%;
     .title {
       display: flex;
       justify-content: space-between;

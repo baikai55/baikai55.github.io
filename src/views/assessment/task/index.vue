@@ -33,7 +33,7 @@
             <div class="m_text">
                 <p>任务列表</p>
                 <div class="user-control-btn">
-                    <div>
+                    <div v-if="userType!=5">
                         <el-button id="newstaff" icon="el-icon-plus" size="small" @click="newParams">新增</el-button>
                         <template>
                             <el-button v-if="deleteAllTemp.length <= 0" icon="el-icon-delete" size="small"
@@ -593,6 +593,9 @@ export default {
                         caozuo: item.taskState,
                         taskType: item.taskType,
                         taskState: item.taskState,
+                        checkerStr: item.checkerStr,
+                        startTime: item.startTime,
+                        deadline: item.deadline,
                     };
                     return tempData;
                 });

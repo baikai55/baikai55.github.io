@@ -32,7 +32,7 @@
                 <p>分数记录列表</p>
                 <div class="user-control-btn">
                     <div>
-                        <template>
+                        <template v-if="userType!=5">
                             <el-button v-if="deleteAllTemp.length <= 0" icon="el-icon-delete" size="small"
                                 @click="deleteAll">批量删除
                             </el-button>
@@ -149,6 +149,7 @@ import { createData } from "@/api/assessment/appeal";
 import { getUserTypeList } from "@/api/system/user.js";
 import request from "@/utils/request";
 import headers from "./tableConfig";
+import { getData } from '@/api/score/score'
 export default {
     computed: {
         ...mapState(["userType"]),
@@ -195,15 +196,30 @@ export default {
                 header: headers,
             },
             fileList: [],
-            fileId: [],
+            fileIds: [],
             userListData: [],
         };
     },
     created() {
         this.getTable();
         this.getUserList();
+        this.classList();
     },
     methods: {
+        // 新增-获取大类
+        classList() {
+            getClassList().then((res) => {
+                console.log(res, 'classList');
+                let temp = res.result.map((item) => {
+                    let tempData = {
+                        value: item.id,
+                        label: item.typeName,
+                    };
+                    return tempData;
+                });
+                this.optionsNew = temp;
+            });
+        },
         getUserList() {
             getUserTypeList("5").then((res) => {
                 if (res.errCode == 200) {
@@ -231,8 +247,7 @@ export default {
                         url: fileUrl,
                     };
                     this.fileList.push(temp);
-                    this.fileId.push(id);
-                    console.log(temp, "temp");
+                    this.fileIds.push(id);
                 });
         },
         handleRemove(row, index) {
@@ -324,7 +339,7 @@ export default {
         //申诉
         appealTask(row) {
             this.title = "申诉";
-            getOne(row.id, row.taskType).then((res) => {
+            getOne(row.operator, 1).then((res) => {
                 console.log(res, "res");
                 if (res.errCode == 200) {
                     this.checkTaskDivsi = true;
@@ -340,9 +355,11 @@ export default {
         appealTaskComfig() {
             this.checkTaskDivsi = false;
             const { id, description } = this.checkTaskList;
+
             let temp = {
                 taskId: id,
                 appealReason: description,
+                fileIds: this.fileIds
             };
             createData(temp).then((res) => {
                 console.log(res);
@@ -378,24 +395,25 @@ export default {
         },
         // 获取表格数据
         getTable() {
-            getParamsList(this.pagination).then((res) => {
+            getData(this.pagination).then((res) => {
                 let temp = res.result.records.map((item) => {
                     let tempData = {
                         id: item.id,
                         bigTypeStr: item.bigTypeStr,
                         smallTypeStr: item.smallTypeStr,
-                        taskState: item.taskState,
-                        executorStr: item.executorStr,
-                        completeTime: item.completeTime,
+                        operationType: item.operationType,
+                        isAppeal: item.isAppeal,
                         score: item.score,
-                        taskState: item.taskState,
-                        caozuo: item.taskState,
-                        taskType: item.taskType,
-                        taskState: item.taskState,
+                        caozuo: item.isAppeal,
+                        operator: item.operator,
+                        userId: item.userId,
+                        oldScore: item.oldScore,
+
+
                     };
                     return tempData;
                 });
-                this.table.tableData = res.result.records;
+                this.table.tableData = temp;
                 this.pagination.total = res.result.total;
             });
         },

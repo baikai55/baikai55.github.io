@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "32527185",
+      "name": "排名",
+      "font_class": "paiming",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "32527186",
+      "name": "首页",
+      "font_class": "shouye",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "32527187",
+      "name": "考核",
+      "font_class": "kaohe",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "32527188",
+      "name": "系统管理",
+      "font_class": "xitongguanli",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
       "icon_id": "32496009",
       "name": "分数",
       "font_class": "fenshu",

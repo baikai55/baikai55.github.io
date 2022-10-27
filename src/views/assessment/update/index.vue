@@ -179,7 +179,7 @@ export default {
         deleteAll() {
             if (this.deleteAllTemp.length <= 0) {
                 this.$message({
-                    message: '请选择要删除的数据',
+                    message: '请选择不扣分的数据',
                     type: 'warning'
                 });
             }
