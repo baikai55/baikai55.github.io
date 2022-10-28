@@ -33,7 +33,7 @@
             <div class="m_text">
                 <p>任务列表</p>
                 <div class="user-control-btn">
-                    <div v-if="userType!=5">
+                    <div v-if="userType != 5">
                         <el-button id="newstaff" icon="el-icon-plus" size="small" @click="newParams">新增</el-button>
                         <!-- <template>
                             <el-button v-if="deleteAllTemp.length <= 0" icon="el-icon-delete" size="small"
@@ -58,7 +58,7 @@
             </Pagination>
         </div>
         <!-- // 新增弹窗 -->
-        <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
+        <el-dialog :title="title" :visible.sync="dialogVisibleNew" :close-on-click-modal="false">
             <div class="content-dia">
                 <el-form ref="formNew" :model="formNew" label-width="80px">
                     <el-form-item label="大类" prop="bigTypeId">
@@ -97,13 +97,13 @@
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="newParamsComfigCancel">取 消</el-button>
                 <el-button type="primary" @click="newParamsComfig('formNew')">确 定</el-button>
+                <el-button @click="newParamsComfigCancel">取 消</el-button>
             </span>
         </el-dialog>
 
         <!-- 详细、扣分 -->
-        <el-dialog :title="title" :visible.sync="checkTaskDivsi" :before-close="handleClose">
+        <el-dialog :title="title" :visible.sync="checkTaskDivsi" :close-on-click-modal="false" @close="diaClose">
             <div class="content-dia">
                 <el-form ref="checkTaskList" :model="checkTaskList" label-width="100px">
                     <el-form-item label="大类" prop="bigTypeId">
@@ -147,17 +147,19 @@
                         <el-steps :space="200" :active="checkTaskList.taskState" finish-status="success"
                             style="width: 100%; margin-left: 20px">
                             <el-step title="进行中"></el-step>
-                            <el-step title="已完成"></el-step>
-                            <el-step v-if="checkTaskList.taskType == 1" title="待申诉"></el-step>
-                            <el-step title="完成"></el-step>
+                            <el-step v-if="checkTaskList.taskState == 99 || checkTaskList.taskState == 98" title="已提交">
+                            </el-step>
+                            <el-step v-if="checkTaskList.taskState == 1" title="待完成"></el-step>
+                            <el-step v-if="checkTaskList.taskState == 99" title="完成"></el-step>
                         </el-steps>
                     </div>
-                    <template v-if="title != '详细' && title != '办理'">
+                    <template v-if="title != '办理'">
                         <el-form-item label="所扣分值" prop="score">
-                            <el-input v-model="checkTaskList.score"> </el-input>
+                            <el-input v-model="checkTaskList.score" :disabled="checkTaskDisabed"> </el-input>
                         </el-form-item>
-                        <el-form-item label="考核备注" prop="checkRemake">
-                            <el-input type="textarea" v-model="checkTaskList.checkRemake"> </el-input>
+                        <el-form-item label="考核备注" prop="otherScoreExplain">
+                            <el-input type="textarea" v-model="checkTaskList.otherScoreExplain"
+                                :disabled="checkTaskDisabed"> </el-input>
                         </el-form-item>
                     </template>
                 </el-form>
@@ -254,6 +256,10 @@ export default {
         this.getUserList();
     },
     methods: {
+        diaClose() {
+            console.log("关闭");
+            this.dialogVisibleNew = false;
+        },
         getUserList() {
             getUserTypeList("5").then((res) => {
                 if (res.errCode == 200) {
@@ -479,11 +485,11 @@ export default {
         },
         //抽查确认
         checkTaskComfig() {
-            const { id, score, checkRemake } = this.checkTaskList;
+            const { id, score, otherScoreExplain } = this.checkTaskList;
             let temp = {
                 id,
                 score,
-                otherScoreExplain: checkRemake,
+                otherScoreExplain: otherScoreExplain,
             };
             checkTaskNew(temp).then((res) => {
                 if (res.errCode == 200) {
@@ -580,7 +586,7 @@ export default {
         },
         // 重置表单
         resetForm() {
-            console.log("resetForm");
+
             this.checkTaskList = {
                 bigTypeId: "",
                 smallTypeId: "",
@@ -588,7 +594,7 @@ export default {
                 description: "",
                 fileName: "",
                 score: "",
-                checkRemake: "",
+                otherScoreExplain: "",
                 taskState: null,
             };
             this.formNew = {
@@ -598,19 +604,12 @@ export default {
                 description: "",
                 fileName: "",
                 score: "",
-                checkRemake: "",
+                otherScoreExplain: "",
                 taskState: null,
             };
+            this.date = "";
         },
-        //离开弹出框
-        handleClose(done) {
-            this.$confirm("确认关闭？")
-                .then((_) => {
-                    this.resetForm();
-                    done();
-                })
-                .catch((_) => { });
-        },
+
         //单选
         select(val) {
             let temlCurrent = val.current;
@@ -650,5 +649,6 @@ export default {
 
 .steps {
     display: flex;
+    margin-bottom: 22px;
 }
 </style>

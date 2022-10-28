@@ -85,7 +85,7 @@
 
 
         <!-- 添加或修改参数配置对话框 -->
-        <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+        <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
             <div class="content-dia">
                 <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                     <el-form-item label="任务名称" prop="jobName">
@@ -120,7 +120,7 @@
                 <el-button @click="cancel">取 消</el-button>
             </div>
         </el-dialog>
-        <el-dialog :title="title" :visible.sync="openCheck" width="500px" append-to-body>
+        <el-dialog :title="title" :visible.sync="openCheck" width="500px" append-to-body :close-on-click-modal="false">
             <div class="content-dia">
                 <el-form ref="form" :model="form" label-width="80px" style="color: #999">
                     <el-form-item label="任务名称" prop="jobName">

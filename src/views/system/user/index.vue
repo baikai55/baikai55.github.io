@@ -50,7 +50,7 @@
                 :total="pagination.total" :pageNum="pagination.pageNum" :pageSize="pagination.pageSize">
             </Pagination>
         </div>
-        <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
+        <el-dialog :title="title" :visible.sync="dialogVisibleNew" :close-on-click-modal="false">
             <div class="content-dia">
                 <el-form ref="formNew" :model="formNew" label-width="100px" :rules="rules">
                     <el-form-item label="用户名" prop="userName">
@@ -90,9 +90,9 @@
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="newParamsComfigCancel">取 消</el-button>
                 <el-button v-if="title=='新增'" type="primary" @click="newParamsComfig('formNew')">确 定</el-button>
                 <el-button v-else type="primary" @click="updateComfig">确 定</el-button>
+                <el-button @click="newParamsComfigCancel">取 消</el-button>
             </span>
         </el-dialog>
     </div>
@@ -373,15 +373,6 @@ export default {
                 organizationId: '',
 
             }
-        },
-        //离开弹出框
-        handleClose(done) {
-            this.$confirm('确认关闭？')
-                .then(_ => {
-                    this.resetForm()
-                    done();
-                })
-                .catch(_ => { });
         },
         //单选
         select(val) {

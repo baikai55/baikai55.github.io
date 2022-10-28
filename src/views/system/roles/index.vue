@@ -51,7 +51,7 @@
             </Pagination>
         </div>
         <!-- 添加或修改角色配置对话框 -->
-        <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+        <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
             <div class="content-dia">
                 <el-form ref="form" :model="form" :rules="rules" label-width="100px">
                     <el-form-item label="角色名称" prop="roleName">

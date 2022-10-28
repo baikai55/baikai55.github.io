@@ -48,7 +48,7 @@
                 :total="pagination.total" :pageNum="pagination.pageNum" :pageSize="pagination.pageSize">
             </Pagination>
         </div>
-        <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
+        <el-dialog :title="title" :visible.sync="dialogVisibleNew" :close-on-click-modal="false">
             <div class="content-dia">
                 <el-form ref="formNew" :model="formNew" label-width="80px">
                     <el-form-item label="大类" prop="bigTypeStr">
@@ -291,15 +291,7 @@ export default {
                 "describe": ""
             }
         },
-        //离开弹出框
-        handleClose(done) {
-            this.$confirm('确认关闭？')
-                .then(_ => {
-                    this.resetForm()
-                    done();
-                })
-                .catch(_ => { });
-        },
+
         //单选
         select(val) {
             let temlCurrent = val.current

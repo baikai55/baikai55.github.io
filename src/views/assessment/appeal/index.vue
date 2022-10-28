@@ -49,7 +49,7 @@
                 :total="pagination.total" :pageNum="pagination.pageNum" :pageSize="pagination.pageSize">
             </Pagination>
         </div>
-        <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
+        <el-dialog :title="title" :visible.sync="dialogVisibleNew" :close-on-click-modal="false">
             <div class="content-dia">
                 <el-form ref="formNew" :model="formNew" label-width="100px" :rules="rules">
                     <el-form-item label="申诉人" prop="appealUserId">
@@ -448,15 +448,6 @@ export default {
                 roleIds: [],
                 organizationId: "",
             };
-        },
-        //离开弹出框
-        handleClose(done) {
-            this.$confirm("确认关闭？")
-                .then((_) => {
-                    this.resetForm();
-                    done();
-                })
-                .catch((_) => { });
         },
         //单选
         select(val) {

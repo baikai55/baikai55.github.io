@@ -53,7 +53,7 @@
                 </el-table-column>
             </el-table>
         </div>
-        <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
+        <el-dialog :title="title" :visible.sync="dialogVisibleNew" :close-on-click-modal="false">
             <div class="content-dia">
                 <el-form ref="formNew" :model="formNew" label-width="100px">
                     <el-form-item label="机构名称" prop="orgName">
@@ -262,15 +262,7 @@ export default {
                 "parentId": '',
             }
         },
-        //离开弹出框
-        handleClose(done) {
-            this.$confirm('确认关闭？')
-                .then(_ => {
-                    this.resetForm()
-                    done();
-                })
-                .catch(_ => { });
-        },
+
         // 分页器一页显示多少条
         handleSizeChange(val) {
             this.pagination.pageSize = val.pageSize;

@@ -73,7 +73,7 @@
                 </el-table-column>
             </el-table>
         </div>
-        <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+        <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
             <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                 <el-form-item label="菜单路径" prop="path">
                     <el-input v-model="form.path" placeholder="请输入内容"></el-input>

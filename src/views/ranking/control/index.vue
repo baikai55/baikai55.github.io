@@ -45,7 +45,7 @@
             </Pagination>
         </div>
         <!-- 详细、扣分 -->
-        <el-dialog :title="title" :visible.sync="checkTaskDivsi" :before-close="handleClose">
+        <el-dialog :title="title" :visible.sync="checkTaskDivsi" :close-on-click-modal="false">
             <div class="content-dia">
                 <el-form ref="checkTaskList" :model="checkTaskList" label-width="100px">
                     <el-form-item label="大类" prop="bigTypeId">
@@ -396,15 +396,7 @@ export default {
                 taskState: null,
             };
         },
-        //离开弹出框
-        handleClose(done) {
-            this.$confirm("确认关闭？")
-                .then((_) => {
-                    this.resetForm();
-                    done();
-                })
-                .catch((_) => { });
-        },
+
         //单选
         select(val) {
             let temlCurrent = val.current;
