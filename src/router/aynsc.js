@@ -1,4 +1,4 @@
-//
+//系统管理
 const dept = {
   path: "/system/dept",
   component: () => import("@/views/system/dept"),
@@ -25,7 +25,7 @@ const white = {
   path: "/system/white",
   component: () => import("@/views/system/white"),
 };
-//
+//参数分值
 const params = {
   path: "/assess/params",
   component: () => import("@/views/assess/params"),
@@ -38,9 +38,9 @@ const score = {
   path: "/assess/score",
   component: () => import("@/views/assess/score"),
 };
-//
+//404
 const NotFound = { path: "*", component: () => import("@/views/404") };
-//
+//警员管理
 const deptP = {
   path: "/police/dept",
   component: () => import("@/views/police/dept"),
@@ -53,7 +53,7 @@ const msg = {
   path: "/police/msg",
   component: () => import("@/views/police/msg"),
 };
-//
+//任务、考核
 const task = {
   path: "/assessment/task",
   component: () => import("@/views/assessment/task"),
@@ -79,7 +79,7 @@ const spottest = {
   component: () => import("@/views/assessment/spottest"),
 };
 
-//
+//公告
 const control = {
   path: "/notice/control",
   component: () => import("@/views/notice/control"),
@@ -88,7 +88,7 @@ const updateN = {
   path: "/notice/update",
   component: () => import("@/views/notice/update"),
 };
-//
+//排名
 const detailsR = {
   path: "/ranking/details",
   component: () => import("@/views/ranking/details"),

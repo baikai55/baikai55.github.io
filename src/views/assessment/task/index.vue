@@ -35,7 +35,7 @@
                 <div class="user-control-btn">
                     <div v-if="userType!=5">
                         <el-button id="newstaff" icon="el-icon-plus" size="small" @click="newParams">新增</el-button>
-                        <template>
+                        <!-- <template>
                             <el-button v-if="deleteAllTemp.length <= 0" icon="el-icon-delete" size="small"
                                 @click="deleteAll">批量删除
                             </el-button>
@@ -43,7 +43,7 @@
                                 <el-button slot="reference" id="deleteAll" icon="el-icon-delete" size="small">批量删除
                                 </el-button>
                             </el-popconfirm>
-                        </template>
+                        </template> -->
                     </div>
                 </div>
             </div>
@@ -57,6 +57,7 @@
                 :total="pagination.total" :pageNum="pagination.pageNum" :pageSize="pagination.pageSize">
             </Pagination>
         </div>
+        <!-- // 新增弹窗 -->
         <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
             <div class="content-dia">
                 <el-form ref="formNew" :model="formNew" label-width="80px">
@@ -131,7 +132,7 @@
                     <el-form-item label="任务附件" prop="fileName">
                         <template v-if="checkTaskList.attachmentVoList">
                             <img :src="item.fileUrl" alt="" v-for="item in checkTaskList.attachmentVoList"
-                                :key="item.businessId" width="100" @click="ImgClick(item.fileUrl)" />
+                                :key="item.id" width="100" @click="ImgClick(item.fileUrl)" />
                         </template>
                         <template v-if="title != '详细' && title != '抽查'">
                             <el-upload class="upload-demo" action="#" :http-request="upload" :on-remove="handleRemove"
@@ -141,7 +142,7 @@
                         </template>
                     </el-form-item>
 
-                    <div class="steps" v-if="title != '办理' && title != '申诉'">
+                    <div class="steps" v-if="title != '办理'">
                         <el-form-item class="label" label="任务进度" prop="fileName"></el-form-item>
                         <el-steps :space="200" :active="checkTaskList.taskState" finish-status="success"
                             style="width: 100%; margin-left: 20px">
@@ -151,7 +152,7 @@
                             <el-step title="完成"></el-step>
                         </el-steps>
                     </div>
-                    <template v-if="title != '详细' && title != '办理' && title != '申诉'">
+                    <template v-if="title != '详细' && title != '办理'">
                         <el-form-item label="所扣分值" prop="score">
                             <el-input v-model="checkTaskList.score"> </el-input>
                         </el-form-item>
@@ -166,7 +167,6 @@
                 <el-button v-if="title == '详细'" type="primary" @click="checkTaskDivsi = false">确认</el-button>
                 <el-button v-if="title == '抽查'" type="primary" @click="checkTaskComfig">扣分</el-button>
                 <el-button v-if="title == '办理'" type="primary" @click="submitTaskComfig">办理</el-button>
-                <el-button v-if="title == '申诉'" type="primary" @click="appealTaskComfig">申诉</el-button>
             </span>
         </el-dialog>
         <el-dialog :visible.sync="dialogVisibleImg">
@@ -285,9 +285,11 @@ export default {
                     console.log(temp, "temp");
                 });
         },
-        handleRemove(row, index) {
-            // this.fileList.splice(index, 1);
-            console.log(row, index);
+        handleRemove(row, index, file) {
+            this.fileList.splice(index, 1);
+            const { id } = row
+            let ind = this.fileId.findIndex(item => item == id)
+            this.fileId.splice(ind, 1)
         },
         successTask(response, file, fileList) {
             console.log(response, file, fileList, "response, file, fileList");
@@ -420,40 +422,6 @@ export default {
             } else if (val.methods == "appeal") {
                 this.appealTask(val.row);
             }
-        },
-        //申诉
-        appealTask(row) {
-            this.title = "申诉";
-            getOne(row.id, row.taskType).then((res) => {
-                console.log(res, "res");
-                if (res.errCode == 200) {
-                    this.checkTaskDivsi = true;
-                    this.checkTaskDisabed = false;
-                    this.checkTaskList = res.result;
-                    getLillteClass({ id: res.result.bigTypeId }).then((res) => {
-                        this.littleClass = res.result;
-                    });
-                }
-            });
-        },
-        //申诉-确认
-        appealTaskComfig() {
-            this.checkTaskDivsi = false;
-            const { id, description } = this.checkTaskList;
-            let temp = {
-                taskId: id,
-                appealReason: description,
-            };
-            createData(temp).then((res) => {
-                console.log(res);
-                if (res.errCode == 200) {
-                    this.$message({
-                        message: `${res.errMsg}`,
-                        type: "success",
-                    });
-                    this.getTable();
-                }
-            });
         },
         //办理
         submitTaskCheck(row) {
@@ -612,7 +580,18 @@ export default {
         },
         // 重置表单
         resetForm() {
+            console.log("resetForm");
             this.checkTaskList = {
+                bigTypeId: "",
+                smallTypeId: "",
+                taskTitle: "",
+                description: "",
+                fileName: "",
+                score: "",
+                checkRemake: "",
+                taskState: null,
+            };
+            this.formNew = {
                 bigTypeId: "",
                 smallTypeId: "",
                 taskTitle: "",

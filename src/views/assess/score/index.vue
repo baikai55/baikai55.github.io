@@ -14,14 +14,12 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" icon="el-icon-search" @click="search"
-              >查询
+            <el-button type="primary" size="small" icon="el-icon-search" @click="search">查询
             </el-button>
           </el-form-item>
           <el-form-item>
             <el-button size="small" type="info" icon="el-icon-refresh" @click="reset">
-              重置</el-button
-            >
+              重置</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -32,10 +30,8 @@
         <p>参数分值列表</p>
         <div class="user-control-btn">
           <div>
-            <el-button id="newstaff" icon="el-icon-plus" size="small" @click="newParams"
-              >新增</el-button
-            >
-            <template>
+            <el-button id="newstaff" icon="el-icon-plus" size="small" @click="newParams">新增</el-button>
+            <!-- <template>
               <el-button
                 v-if="deleteAllTemp.length <= 0"
                 icon="el-icon-delete"
@@ -52,37 +48,21 @@
                   >批量删除
                 </el-button>
               </el-popconfirm>
-            </template>
+            </template> -->
           </div>
         </div>
       </div>
     </div>
     <div class="table">
-      <Table
-        :table="table"
-        ref="table"
-        @handButton="handButton"
-        @select="select"
-        @selectAll="selectAll"
-        @confirmDel="confirmDel"
-      ></Table>
+      <Table :table="table" ref="table" @handButton="handButton" @select="select" @selectAll="selectAll"
+        @confirmDel="confirmDel"></Table>
     </div>
     <div class="pagination">
-      <Pagination
-        background
-        @handleSizeChange="handleSizeChange"
-        @handleCurrentChange="handleCurrentChange"
-        :total="pagination.total"
-        :pageNum="pagination.pageNum"
-        :pageSize="pagination.pageSize"
-      >
+      <Pagination background @handleSizeChange="handleSizeChange" @handleCurrentChange="handleCurrentChange"
+        :total="pagination.total" :pageNum="pagination.pageNum" :pageSize="pagination.pageSize">
       </Pagination>
     </div>
-    <el-dialog
-      :title="title"
-      :visible.sync="dialogVisibleNew"
-      :before-close="handleClose"
-    >
+    <el-dialog :title="title" :visible.sync="dialogVisibleNew" :before-close="handleClose">
       <div class="content-dia">
         <el-form ref="formNew" :model="formNew" label-width="80px">
           <el-form-item label="类型" prop="paramGrade">
@@ -94,12 +74,7 @@
           <template v-if="formNew.paramGrade == 1">
             <el-form-item label="大类" prop="parentId">
               <el-select v-model="formNew.parentId" placeholder="请选择">
-                <el-option
-                  v-for="item in optionsNew"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
+                <el-option v-for="item in optionsNew" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -129,31 +104,14 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="考核用户" prop="checkerList">
-            <el-select
-              v-model="formNew.checkerList"
-              placeholder="请选择"
-              multiple
-              filterable
-            >
-              <el-option
-                v-for="item in userListData"
-                :key="item.id"
-                :label="item.realName"
-                :value="item.id"
-              >
+            <el-select v-model="formNew.checkerList" placeholder="请选择" multiple filterable>
+              <el-option v-for="item in userListData" :key="item.id" :label="item.realName" :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="其他备注" prop="remark">
-            <el-input
-              type="textarea"
-              resize="none"
-              :rows="7"
-              placeholder="请输入内容"
-              v-model="formNew.remark"
-              show-word-limit
-              maxlength="500"
-            >
+            <el-input type="textarea" resize="none" :rows="7" placeholder="请输入内容" v-model="formNew.remark"
+              show-word-limit maxlength="500">
             </el-input>
           </el-form-item>
         </el-form>
@@ -356,9 +314,9 @@ export default {
     //修改
     updateTable(val) {
       this.title = "修改";
-      this.dialogVisibleNew = true;
       getOne(val.id).then((res) => {
         this.formNew = res.result;
+        this.dialogVisibleNew = true;
       });
     },
     // 新增-获取大类
@@ -480,7 +438,7 @@ export default {
           this.resetForm();
           done();
         })
-        .catch((_) => {});
+        .catch((_) => { });
     },
     //单选
     select(val) {
@@ -513,4 +471,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+
+</style>
